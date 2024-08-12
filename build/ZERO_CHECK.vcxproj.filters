@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\alank\Documents\CameraApp\build\CMakeFiles\80646113617b38599e0e3aec6782f5a6\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{17FDC903-CFA6-38E5-9BD2-FD403EFCB31C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

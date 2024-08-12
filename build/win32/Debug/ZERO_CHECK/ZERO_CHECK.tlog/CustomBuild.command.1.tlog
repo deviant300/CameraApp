@@ -1,0 +1,10 @@
+^C:\USERS\ALANK\DOCUMENTS\CAMERAAPP\BUILD\CMAKEFILES\80646113617B38599E0E3AEC6782F5A6\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/alank/Documents/CameraApp -BC:/Users/alank/Documents/CameraApp/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/alank/Documents/CameraApp/build/CameraApp.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
