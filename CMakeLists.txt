@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.10)
 project(CameraApp LANGUAGES CXX)
 
 # Include Camera Remote SDK headers
-include_directories(C:/Users/alank/Documents/CameraApp/Cameraremote_SDK/include)
+include_directories(/home/dev/Documents/CameraApp/Cameraremote_SDK/include)
 
 # Link Camera Remote SDK libraries
-link_directories(C:/Users/alank/Documents/CameraApp/Cameraremote_SDK/lib)
+link_directories(/home/dev/Documents/CameraApp/Cameraremote_SDK/lib)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)

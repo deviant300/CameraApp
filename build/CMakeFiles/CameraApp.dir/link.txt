@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/CameraApp.dir/main.cpp.o -o CameraApp   -L/home/dev/Documents/CameraApp/Cameraremote_SDK/lib  -Wl,-rpath,/home/dev/Documents/CameraApp/Cameraremote_SDK/lib -lCr_Core -lCr_PTP_IP -lCr_PTP_USB -lusb-1.0 -lssh2 
