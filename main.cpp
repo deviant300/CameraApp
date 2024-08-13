@@ -143,8 +143,37 @@ int main(){
         return 0;
     }
 
-    CrChar *filepath = "C:/Users/alank/Documents/CameraApp/Images";
-    handle.setSaveInfo(filepath);
-//    handle.setSaveInfo(const<CrChar>(filepath));
+    CrChar* filepath = "C:/Users/alank/Documents/CameraApp/Images";
+    handle.setSaveInfo(*(const_cast<CrChar*>(filepath)));
+
+    while(true){
+        std::string input;
+
+        std::cout << "Take a picture (y/n):" << std::endl;
+        std::cin >> input;
+        std::cout << " " << std::endl;
+
+        if (handle.isCameraConnected() == true){
+            continue;
+        }
+        else {
+            break;
+        }
+
+        if (input == "y"){
+            handle.CaptureImage();
+
+            std::cout << "Image captured and saved to: " << filepath << std::endl;
+        }
+        else if (input == "n"){
+            std::cout << "Disconnecting..." << std::endl;
+            handle.disConnect();
+            break;
+        }
+        else {
+            std::cout << "Invalid input..." << std::endl;
+            continue;
+        }
+    }
 
 }
