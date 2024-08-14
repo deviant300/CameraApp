@@ -12,7 +12,7 @@
 #include "Text.h"
 #include "ConnectionInfo.h"
 #include "MessageDefine.h"
-#include "ProcessSnapshot.h"
+#include "PropertyValueTable.h"
 #include "Text.h"
 
 //***General libraries***
@@ -102,7 +102,7 @@ int main(){
     CameraHandler handle;
     
     handle.Initialize();
-    
+
     handle.getSDKversion();
     handle.Enumerate();
 }
