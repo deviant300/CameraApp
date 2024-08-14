@@ -1,16 +1,19 @@
-/*Note to the ones new to c++ do remember to change compiler settings
-  Freaked me out when I took this project to my windows Laptop */
-
 //***Camera Libraries***
-#include "CameraRemote_SDK.h"
-#include "CrCommandData.h"
-#include "CrDefines.h"
-#include "CrDeviceProperty.h"
-#include "CrError.h"
-#include "CrImageDataBlock.h"
-#include "CrTypes.h"
-#include "ICrCameraObjectInfo.h"
-#include "IDeviceCallback.h"
+#include "CRSDK\CameraRemote_SDK.h"
+#include "CRSDK\CrCommandData.h"
+#include "CRSDK\CrDefines.h"
+#include "CRSDK\CrDeviceProperty.h"
+#include "CRSDK\CrError.h"
+#include "CRSDK\CrImageDataBlock.h"
+#include "CRSDK\CrTypes.h"
+#include "CRSDK\ICrCameraObjectInfo.h"
+#include "CRSDK\IDeviceCallback.h"
+#include "CameraDevice.h"
+#include "Text.h"
+#include "ConnectionInfo.h"
+#include "MessageDefine.h"
+#include "ProcessSnapshot.h"
+#include "Text.h"
 
 //***General libraries***
 #include <iostream>
@@ -20,6 +23,8 @@
 #include <iomanip>
 #include <ctime>
 #include <string>
+#include <cstdint>
+#include <cstdlib>
 
 //defining namespace
 using namespace SCRSDK;
@@ -29,53 +34,60 @@ class CameraHandler : public IDeviceCallback {
     public:
 
     CameraHandler() : camera_connected(false), camera_handle(0) {std::cout << "Constructor called..." << std::endl;}
-    ~CameraHandler() {std::cout << "Destructor called..." << std::endl;}
-
-    void OnConnected() {
-        std::cout << "Connected to camera." << std::endl;
-    }
+    ~CameraHandler() {cli::tout << "Destructor called..." << std::endl;}
 
     void Initialize(){
 
         std::cout << "Attempting to initialize SDK" <<std::endl;
-        bool ret = Init();
+        auto ret = Init();
         if(!ret){
             std::cout << "Initialization failed" << std::endl;
-            std::cout << "Retry." << std::endl;
-            Release();
-            std::exit(EXIT_FAILURE);
-        }
-    }
-
-    bool isCameraConnected(){
-        return camera_connected;
-    }
-
-    CrDeviceHandle getCameraHandle(){
-        return camera_handle;
-    }
-
-    void enumerateCamera(){
-        std::cout << "Enumerating cameras..." << std::endl;
-        ICrEnumCameraObjectInfo* pEnum = nullptr;
-        CrError err = EnumCameraObjects(&pEnum);
-        if (pEnum == 0) {
-            std::cerr << "error: " << err << std::endl;
-            std::cout << "No cameras detected, exiting..." << std::endl;
-            std::cout << "Connect a camera and retry." << std::endl;
+            std::cout << "Terminating..." << std::endl;
             Release();
             std::exit(EXIT_FAILURE);
         }
 
-        CrInt32u count = pEnum->GetCount();
-        std::cout << count << " cameras detected" <<std::endl;
-        for(CrInt32u n = 0; n < count; n++){
-            const ICrCameraObjectInfo *pobj = pEnum->GetCameraObjectInfo(n);
-        }
+        std::cout << "Initialization failed" << std::endl;
     }
 
-    void setSaveInfo(CrChar filepath){
-        SetSaveInfo(camera_handle, &filepath, "", -1);
+    void getSDKversion() {
+        std::cout << "RemoteSampleApp v1.12.00 running..." << std::endl << std::endl;
+
+        CrInt32u version = GetSDKVersion();
+        int major = (version & 0xFF000000) >> 24;
+        int minor = (version & 0x00FF0000) >> 16;
+        int patch = (version & 0x0000FF00) >> 8;
+        // int reserved = (version & 0x000000FF);
+
+        std::cout << "Remote SDK version: ";
+        std::cout << major << "." << minor << "." << std::setfill(char('0')) << std::setw(2) << patch << std::endl;
+
+        std::cout << "Initialize Remote SDK...\n";
+    }
+
+    void Enumerate(){
+        cli::tout << "Enumerate connected camera devices..." << std::endl;
+        ICrEnumCameraObjectInfo* camera_list = nullptr;
+        auto enum_status = EnumCameraObjects(&camera_list);
+        if (CR_FAILED(enum_status) || camera_list == nullptr) {
+            cli::tout << "No cameras detected. Connect a camera and retry." << std::endl;
+            Release();
+            std::exit(EXIT_FAILURE);
+        }
+        auto ncams = camera_list->GetCount();
+        cli::tout << "Camera enumeration successful. " << ncams << " detected." << std::endl << std::endl;
+
+        auto camera_info = camera_list->GetCameraObjectInfo(0);
+        cli::text conn_type(camera_info->GetConnectionTypeName());
+        cli::text model(camera_info->GetModel());
+        cli::text id = TEXT("");
+        if (TEXT("IP") == conn_type) {
+            cli::NetworkInfo ni = cli::parse_ip_info(camera_info->GetId(), camera_info->GetIdSize());
+            id = ni.mac_address;
+        }
+        else id = ((TCHAR*)camera_info->GetId());
+        cli::tout << '[' <<  1 << "] " << model.data() << " (" << id.data() << ")" << std::endl;
+        
     }
 
     private:
@@ -84,8 +96,13 @@ class CameraHandler : public IDeviceCallback {
 };
 
 int main(){
+    // Change global locale to native locale
+    std::locale::global(std::locale(""));
+
     CameraHandler handle;
     
     handle.Initialize();
-    handle.enumerateCamera();
+    
+    handle.getSDKversion();
+    handle.Enumerate();
 }
