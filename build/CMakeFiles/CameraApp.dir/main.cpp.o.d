@@ -1,8 +1,8 @@
 CMakeFiles/CameraApp.dir/main.cpp.o: \
  /home/dev/Documents/CameraApp/main.cpp /usr/include/stdc-predef.h \
- /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CameraRemote_SDK.h \
- /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CrCommandData.h \
- /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CrTypes.h \
+ /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CRSDK/CameraRemote_SDK.h \
+ /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CRSDK/CrCommandData.h \
+ /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CRSDK/CrTypes.h \
  /usr/include/aarch64-linux-gnu/sys/types.h /usr/include/features.h \
  /usr/include/features-time64.h \
  /usr/include/aarch64-linux-gnu/bits/wordsize.h \
@@ -36,33 +36,35 @@ CMakeFiles/CameraApp.dir/main.cpp.o: \
  /usr/include/aarch64-linux-gnu/bits/atomic_wide_counter.h \
  /usr/include/aarch64-linux-gnu/bits/struct_mutex.h \
  /usr/include/aarch64-linux-gnu/bits/struct_rwlock.h \
- /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CrDefines.h \
- /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CrError.h \
- /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CrDeviceProperty.h \
- /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CrImageDataBlock.h \
- /home/dev/Documents/CameraApp/Cameraremote_SDK/include/ICrCameraObjectInfo.h \
- /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CrCommandData.h \
- /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CrDefines.h \
- /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CrDeviceProperty.h \
- /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CrError.h \
- /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CrImageDataBlock.h \
- /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CrTypes.h \
- /home/dev/Documents/CameraApp/Cameraremote_SDK/include/ICrCameraObjectInfo.h \
- /home/dev/Documents/CameraApp/Cameraremote_SDK/include/IDeviceCallback.h \
- /usr/include/c++/12/iostream \
+ /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CRSDK/CrDefines.h \
+ /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CRSDK/CrError.h \
+ /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CRSDK/CrDeviceProperty.h \
+ /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CRSDK/CrImageDataBlock.h \
+ /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CRSDK/ICrCameraObjectInfo.h \
+ /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CameraDevice.h \
+ /usr/include/c++/12/atomic /usr/include/c++/12/bits/atomic_base.h \
  /usr/include/aarch64-linux-gnu/c++/12/bits/c++config.h \
  /usr/include/aarch64-linux-gnu/c++/12/bits/os_defines.h \
  /usr/include/aarch64-linux-gnu/c++/12/bits/cpu_defines.h \
- /usr/include/c++/12/pstl/pstl_config.h /usr/include/c++/12/ostream \
- /usr/include/c++/12/ios /usr/include/c++/12/iosfwd \
- /usr/include/c++/12/bits/stringfwd.h \
+ /usr/include/c++/12/pstl/pstl_config.h \
+ /usr/lib/gcc/aarch64-linux-gnu/12/include/stdint.h /usr/include/stdint.h \
+ /usr/include/aarch64-linux-gnu/bits/libc-header-start.h \
+ /usr/include/aarch64-linux-gnu/bits/wchar.h \
+ /usr/include/aarch64-linux-gnu/bits/stdint-uintn.h \
+ /usr/include/c++/12/bits/atomic_lockfree_defines.h \
+ /usr/include/c++/12/bits/move.h /usr/include/c++/12/type_traits \
+ /usr/include/c++/12/cstdint \
+ /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CRSDK/CameraRemote_SDK.h \
+ /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CRSDK/IDeviceCallback.h \
+ /home/dev/Documents/CameraApp/Cameraremote_SDK/include/ConnectionInfo.h \
+ /home/dev/Documents/CameraApp/Cameraremote_SDK/include/Text.h \
+ /usr/include/c++/12/istream /usr/include/c++/12/ios \
+ /usr/include/c++/12/iosfwd /usr/include/c++/12/bits/stringfwd.h \
  /usr/include/c++/12/bits/memoryfwd.h /usr/include/c++/12/bits/postypes.h \
  /usr/include/c++/12/cwchar /usr/include/wchar.h \
- /usr/include/aarch64-linux-gnu/bits/libc-header-start.h \
  /usr/include/aarch64-linux-gnu/bits/floatn.h \
  /usr/include/aarch64-linux-gnu/bits/floatn-common.h \
  /usr/lib/gcc/aarch64-linux-gnu/12/include/stdarg.h \
- /usr/include/aarch64-linux-gnu/bits/wchar.h \
  /usr/include/aarch64-linux-gnu/bits/types/wint_t.h \
  /usr/include/aarch64-linux-gnu/bits/types/mbstate_t.h \
  /usr/include/aarch64-linux-gnu/bits/types/__mbstate_t.h \
@@ -75,12 +77,8 @@ CMakeFiles/CameraApp.dir/main.cpp.o: \
  /usr/include/c++/12/bits/exception_defines.h \
  /usr/include/c++/12/bits/cxxabi_init_exception.h \
  /usr/include/c++/12/typeinfo /usr/include/c++/12/bits/hash_bytes.h \
- /usr/include/c++/12/new /usr/include/c++/12/bits/move.h \
- /usr/include/c++/12/type_traits \
- /usr/include/c++/12/bits/nested_exception.h \
- /usr/include/c++/12/bits/char_traits.h /usr/include/c++/12/cstdint \
- /usr/lib/gcc/aarch64-linux-gnu/12/include/stdint.h /usr/include/stdint.h \
- /usr/include/aarch64-linux-gnu/bits/stdint-uintn.h \
+ /usr/include/c++/12/new /usr/include/c++/12/bits/nested_exception.h \
+ /usr/include/c++/12/bits/char_traits.h \
  /usr/include/c++/12/bits/localefwd.h \
  /usr/include/aarch64-linux-gnu/c++/12/bits/c++locale.h \
  /usr/include/c++/12/clocale /usr/include/locale.h \
@@ -163,29 +161,67 @@ CMakeFiles/CameraApp.dir/main.cpp.o: \
  /usr/include/c++/12/bits/streambuf_iterator.h \
  /usr/include/aarch64-linux-gnu/c++/12/bits/ctype_inline.h \
  /usr/include/c++/12/bits/locale_facets.tcc \
- /usr/include/c++/12/bits/basic_ios.tcc \
- /usr/include/c++/12/bits/ostream.tcc /usr/include/c++/12/istream \
- /usr/include/c++/12/bits/istream.tcc /usr/include/c++/12/sstream \
- /usr/include/c++/12/bits/sstream.tcc /usr/include/c++/12/fstream \
- /usr/include/c++/12/bits/codecvt.h \
+ /usr/include/c++/12/bits/basic_ios.tcc /usr/include/c++/12/ostream \
+ /usr/include/c++/12/bits/ostream.tcc \
+ /usr/include/c++/12/bits/istream.tcc /usr/include/c++/12/regex \
+ /usr/include/c++/12/bitset /usr/include/c++/12/locale \
+ /usr/include/c++/12/bits/locale_facets_nonio.h /usr/include/c++/12/ctime \
+ /usr/include/aarch64-linux-gnu/c++/12/bits/time_members.h \
+ /usr/include/aarch64-linux-gnu/c++/12/bits/messages_members.h \
+ /usr/include/libintl.h /usr/include/c++/12/bits/codecvt.h \
+ /usr/include/c++/12/bits/locale_facets_nonio.tcc \
+ /usr/include/c++/12/bits/locale_conv.h /usr/include/c++/12/sstream \
+ /usr/include/c++/12/bits/sstream.tcc /usr/include/c++/12/stack \
+ /usr/include/c++/12/deque /usr/include/c++/12/bits/stl_uninitialized.h \
+ /usr/include/c++/12/bits/stl_deque.h /usr/include/c++/12/bits/deque.tcc \
+ /usr/include/c++/12/bits/stl_stack.h \
+ /usr/include/c++/12/bits/uses_allocator.h \
+ /usr/include/c++/12/ext/aligned_buffer.h \
+ /usr/include/c++/12/bits/shared_ptr.h \
+ /usr/include/c++/12/bits/shared_ptr_base.h \
+ /usr/include/c++/12/bits/allocated_ptr.h \
+ /usr/include/c++/12/bits/unique_ptr.h /usr/include/c++/12/tuple \
+ /usr/include/c++/12/ext/concurrence.h \
+ /usr/include/c++/12/bits/std_function.h \
+ /usr/include/c++/12/bits/stl_algo.h \
+ /usr/include/c++/12/bits/algorithmfwd.h \
+ /usr/include/c++/12/bits/stl_heap.h \
+ /usr/include/c++/12/bits/stl_tempbuf.h \
+ /usr/include/c++/12/bits/uniform_int_dist.h \
+ /usr/include/c++/12/bits/stl_tree.h \
+ /usr/include/c++/12/bits/node_handle.h \
+ /usr/include/c++/12/bits/stl_map.h /usr/include/c++/12/bits/stl_vector.h \
+ /usr/include/c++/12/bits/stl_bvector.h \
+ /usr/include/c++/12/bits/vector.tcc \
+ /usr/include/c++/12/bits/regex_constants.h \
+ /usr/include/c++/12/bits/regex_error.h \
+ /usr/include/c++/12/bits/regex_automaton.h \
+ /usr/include/c++/12/bits/regex_automaton.tcc \
+ /usr/include/c++/12/bits/regex_scanner.h \
+ /usr/include/c++/12/bits/regex_scanner.tcc \
+ /usr/include/c++/12/bits/regex_compiler.h \
+ /usr/include/c++/12/bits/regex_compiler.tcc \
+ /usr/include/c++/12/bits/regex.h /usr/include/c++/12/bits/regex.tcc \
+ /usr/include/c++/12/bits/regex_executor.h \
+ /usr/include/c++/12/bits/regex_executor.tcc \
+ /home/dev/Documents/CameraApp/Cameraremote_SDK/include/PropertyValueTable.h \
+ /usr/include/c++/12/vector \
+ /home/dev/Documents/CameraApp/Cameraremote_SDK/include/MessageDefine.h \
+ /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CRSDK/CrTypes.h \
+ /home/dev/Documents/CameraApp/Cameraremote_SDK/include/CRSDK/CrError.h \
+ /usr/include/c++/12/unordered_map /usr/include/c++/12/bits/hashtable.h \
+ /usr/include/c++/12/bits/hashtable_policy.h \
+ /usr/include/c++/12/bits/enable_special_members.h \
+ /usr/include/c++/12/bits/unordered_map.h \
+ /usr/include/c++/12/bits/erase_if.h \
+ /home/dev/Documents/CameraApp/Cameraremote_SDK/include/Text.h \
+ /usr/include/c++/12/iostream /usr/include/c++/12/fstream \
  /usr/include/aarch64-linux-gnu/c++/12/bits/basic_file.h \
  /usr/include/aarch64-linux-gnu/c++/12/bits/c++io.h \
  /usr/include/c++/12/bits/fstream.tcc /usr/include/c++/12/filesystem \
  /usr/include/c++/12/bits/fs_fwd.h /usr/include/c++/12/bits/chrono.h \
  /usr/include/c++/12/ratio /usr/include/c++/12/limits \
- /usr/include/c++/12/ctime /usr/include/c++/12/bits/parse_numbers.h \
- /usr/include/c++/12/bits/fs_path.h /usr/include/c++/12/locale \
- /usr/include/c++/12/bits/locale_facets_nonio.h \
- /usr/include/aarch64-linux-gnu/c++/12/bits/time_members.h \
- /usr/include/aarch64-linux-gnu/c++/12/bits/messages_members.h \
- /usr/include/libintl.h /usr/include/c++/12/bits/locale_facets_nonio.tcc \
- /usr/include/c++/12/bits/locale_conv.h /usr/include/c++/12/iomanip \
+ /usr/include/c++/12/bits/parse_numbers.h \
+ /usr/include/c++/12/bits/fs_path.h /usr/include/c++/12/iomanip \
  /usr/include/c++/12/bits/quoted_string.h /usr/include/c++/12/codecvt \
- /usr/include/c++/12/ext/concurrence.h \
- /usr/include/c++/12/bits/shared_ptr.h \
- /usr/include/c++/12/bits/shared_ptr_base.h \
- /usr/include/c++/12/bits/allocated_ptr.h \
- /usr/include/c++/12/bits/unique_ptr.h /usr/include/c++/12/tuple \
- /usr/include/c++/12/bits/uses_allocator.h \
- /usr/include/c++/12/ext/aligned_buffer.h \
  /usr/include/c++/12/bits/fs_dir.h /usr/include/c++/12/bits/fs_ops.h
