@@ -1,8 +1,7 @@
 //***Camera Libraries***
-#include "Cameraremote_SDK\include\CRSDK\CameraRemote_SDK.h"
-#include "Cameraremote_SDK\include\CameraDevice.h"
-#include "Cameraremote_SDK\include\Text.h"
-#include "Cameraremote_SDK\include\CRSDK\CrTypes.h"
+#include "CRSDK/CameraRemote_SDK.h"
+#include "CameraDevice.h"
+#include "Text.h"
 
 
 //***General libraries***

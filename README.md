@@ -1,4 +1,7 @@
 # CameraApp
+## Introduction
+
+This is a piece of code based off of Sony SDK to download pictures as they are clicked and directly store them on a raspberry pi or NVIDIA Jetson.
 
 ## How to run
 

@@ -1605,7 +1605,7 @@ enum CrZoomTypeStatus : CrInt8u
 };
 
 // Zoom Operation
-enum CrZoomOperation : CrInt8
+enum CrZoomOperation : CrInt16
 {
 	CrZoomOperation_Wide = -1,
 	CrZoomOperation_Stop = 0,
@@ -2015,7 +2015,7 @@ enum CrRecorderSaveDestination : CrInt16u
 };
 
 // Focus Operation
-enum CrFocusOperation : CrInt8
+enum CrFocusOperation : CrInt16
 {
 	CrFocusOperation_Wide = -1,
 	CrFocusOperation_Stop = 0,
