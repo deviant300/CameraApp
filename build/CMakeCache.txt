@@ -182,6 +182,9 @@ CameraApp_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 CameraApp_SOURCE_DIR:STATIC=C:/Users/alank/Documents/CameraApp
 
+//Path to a library.
+camera_remote:FILEPATH=C:/Users/alank/Documents/CameraApp/external/crsdk/Cr_Core.lib
+
 
 ########################
 # INTERNAL cache entries
