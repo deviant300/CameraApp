@@ -287,12 +287,12 @@ private:
 } // namespace cli
 
 
-inline errno_t MemCpyEx(wchar_t* result, const wchar_t* source, size_t type_size)
+inline errno_t MemCpyEx(void* result, const void* source, size_t type_size)
 {
 #if (defined(_WIN32) || defined(_WIN64))
     return memcpy_s(result, type_size, source, type_size);
 #else
-    std::wmemcpy(result, source, type_size);
+    std::memcpy(result, source, type_size);
     return 0;
 #endif
 }
