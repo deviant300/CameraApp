@@ -18,7 +18,7 @@ add_executable(${CameraApp}
     ${crsdk_hdrs}
 )
 
-set_target_properties(${remotecli} PROPERTIES
+set_target_properties(${CameraApp} PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS NO

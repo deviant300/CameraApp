@@ -1,5 +1,5 @@
 ## Script for enumerating CameraRemote SDK public header files
-## referenced by RemoteCli
+## referenced by CameraApp
 set(__crsdk_hdr_dir ${CMAKE_CURRENT_SOURCE_DIR}/Cameraremote_SDK/include/CRSDK)
 
 ### Enumerate CameraRemote SDK public header files ###

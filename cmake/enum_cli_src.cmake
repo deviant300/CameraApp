@@ -1,7 +1,7 @@
-## Script for enumerating RemoteCli source files
+## Script for enumerating CameraApp source files
 set(__cli_src_dir ${CMAKE_CURRENT_SOURCE_DIR}/Cameraremote_SDK/include)
 
-### Enumerate RemoteCli source files ###
+### Enumerate CameraApp source files ###
 message("[${PROJECT_NAME}] Indexing source files..")
 set(__cli_srcs
     ${__cli_src_dir}/CameraDevice.cpp

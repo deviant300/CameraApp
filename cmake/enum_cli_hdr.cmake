@@ -1,7 +1,7 @@
-## Script for enumerating RemoteCli header files
+## Script for enumerating CameraApp header files
 set(__cli_hdr_dir ${CMAKE_CURRENT_SOURCE_DIR}/Cameraremote_SDK/include)
 
-### Enumerate RemoteCli header files ###
+### Enumerate CameraApp header files ###
 message("[${PROJECT_NAME}] Indexing header files..")
 set(__cli_hdrs
     ${__cli_hdr_dir}/CameraDevice.h

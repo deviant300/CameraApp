@@ -17,7 +17,8 @@
 			"install",
 			"target_link_libraries",
 			"target_compile_options",
-			"target_compile_definitions"
+			"target_compile_definitions",
+			"set_target_properties"
 		],
 		"files" : 
 		[
@@ -57,6 +58,12 @@
 				"file" : 0,
 				"line" : 51,
 				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 21,
+				"parent" : 0
 			}
 		]
 	},
@@ -93,7 +100,7 @@
 			{
 				"backtraces" : 
 				[
-					1
+					6
 				],
 				"standard" : "17"
 			},

@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "Debug/CameraApp.exe"
+			"path" : "Release/CameraApp.exe"
 		},
 		{
-			"path" : "Debug/CameraApp.pdb"
+			"path" : "Release/CameraApp.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -17,7 +17,8 @@
 			"install",
 			"target_link_libraries",
 			"target_compile_options",
-			"target_compile_definitions"
+			"target_compile_definitions",
+			"set_target_properties"
 		],
 		"files" : 
 		[
@@ -57,6 +58,12 @@
 				"file" : 0,
 				"line" : 51,
 				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 21,
+				"parent" : 0
 			}
 		]
 	},
@@ -66,7 +73,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17"
+					"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG -std:c++17"
 				},
 				{
 					"backtrace" : 4,
@@ -93,7 +100,7 @@
 			{
 				"backtraces" : 
 				[
-					1
+					6
 				],
 				"standard" : "17"
 			},
@@ -134,11 +141,11 @@
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1",
+				"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG",
 				"role" : "flags"
 			},
 			{
-				"fragment" : "/machine:x64 /debug /INCREMENTAL /subsystem:console",
+				"fragment" : "/machine:x64 /INCREMENTAL:NO /subsystem:console",
 				"role" : "flags"
 			},
 			{
