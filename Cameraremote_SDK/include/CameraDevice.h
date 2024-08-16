@@ -14,8 +14,8 @@ typedef int errno_t;
 
 #include <atomic>
 #include <cstdint>
-#include "CameraRemote_SDK.h"
-#include "IDeviceCallback.h"
+#include "CRSDK\CameraRemote_SDK.h"
+#include "CRSDK\IDeviceCallback.h"
 #include "ConnectionInfo.h"
 #include "PropertyValueTable.h"
 #include "Text.h"

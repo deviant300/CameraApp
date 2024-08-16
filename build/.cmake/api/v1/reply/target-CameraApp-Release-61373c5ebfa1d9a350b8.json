@@ -2,7 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "CameraApp"
+			"path" : "Release/CameraApp.exe"
+		},
+		{
+			"path" : "Release/CameraApp.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -56,7 +59,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-std=gnu++17"
+					"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG -std:c++17"
 				}
 			],
 			"includes" : 
@@ -81,54 +84,64 @@
 			]
 		}
 	],
+	"dependencies" : 
+	[
+		{
+			"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df"
+		}
+	],
 	"id" : "CameraApp::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "",
+				"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "/machine:x64 /INCREMENTAL:NO /subsystem:console",
 				"role" : "flags"
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "-L/home/dev/Documents/CameraApp/Cameraremote_SDK/lib",
+				"fragment" : "-LIBPATH:\\home\\dev\\Documents\\CameraApp\\Cameraremote_SDK\\lib",
 				"role" : "libraryPath"
 			},
 			{
-				"fragment" : "-Wl,-rpath,/home/dev/Documents/CameraApp/Cameraremote_SDK/lib",
+				"backtrace" : 3,
+				"fragment" : "Cr_Core.lib",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "-lCr_Core",
+				"fragment" : "Cr_PTP_IP.lib",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "-lCr_PTP_IP",
+				"fragment" : "Cr_PTP_USB.lib",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "-lCr_PTP_USB",
+				"fragment" : "usb-1.0.lib",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "-lusb-1.0",
+				"fragment" : "ssh2.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 3,
-				"fragment" : "-lssh2",
+				"fragment" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib",
 				"role" : "libraries"
 			}
 		],
 		"language" : "CXX"
 	},
 	"name" : "CameraApp",
-	"nameOnDisk" : "CameraApp",
+	"nameOnDisk" : "CameraApp.exe",
 	"paths" : 
 	{
 		"build" : ".",

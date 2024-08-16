@@ -1,19 +1,9 @@
 //***Camera Libraries***
-#include "CRSDK\CameraRemote_SDK.h"
-#include "CRSDK\CrCommandData.h"
-#include "CRSDK\CrDefines.h"
-#include "CRSDK\CrDeviceProperty.h"
-#include "CRSDK\CrError.h"
-#include "CRSDK\CrImageDataBlock.h"
-#include "CRSDK\CrTypes.h"
-#include "CRSDK\ICrCameraObjectInfo.h"
-#include "CRSDK\IDeviceCallback.h"
-#include "CameraDevice.h"
-#include "Text.h"
-#include "ConnectionInfo.h"
-#include "MessageDefine.h"
-#include "PropertyValueTable.h"
-#include "Text.h"
+#include "Cameraremote_SDK\include\CRSDK\CameraRemote_SDK.h"
+#include "Cameraremote_SDK\include\CameraDevice.h"
+#include "Cameraremote_SDK\include\Text.h"
+#include "Cameraremote_SDK\include\CRSDK\CrTypes.h"
+
 
 //***General libraries***
 #include <iostream>

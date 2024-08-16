@@ -1,8 +1,8 @@
 #ifndef MESSAGEDEFINE_H
 #define MESSAGEDEFINE_H
 
-#include "CrTypes.h"
-#include "CrError.h"
+#include "CRSDK/CrTypes.h"
+#include "CRSDK/CrError.h"
 #include "Text.h"
 #include <unordered_map>
 

@@ -3,7 +3,7 @@
 
 #include <cstdint>
 #include <vector>
-#include "CameraRemote_SDK.h"
+#include "CRSDK\CameraRemote_SDK.h"
 #include "Text.h"
 
 namespace cli
