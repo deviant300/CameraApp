@@ -366,10 +366,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\Users\alank\Documents\CameraApp\Cameraremote_SDK\include\PropertyValueTable.h" />
     <ClInclude Include="C:\Users\alank\Documents\CameraApp\Cameraremote_SDK\include\Text.h" />
     <ClInclude Include="C:\Users\alank\Documents\CameraApp\Cameraremote_SDK\include\MessageDefine.h" />
+    <ClCompile Include="C:\Users\alank\Documents\CameraApp\main.cpp" />
     <ClCompile Include="C:\Users\alank\Documents\CameraApp\Cameraremote_SDK\include\CameraDevice.cpp" />
     <ClCompile Include="C:\Users\alank\Documents\CameraApp\Cameraremote_SDK\include\ConnectionInfo.cpp" />
     <ClCompile Include="C:\Users\alank\Documents\CameraApp\Cameraremote_SDK\include\PropertyValueTable.cpp" />
-    <ClCompile Include="C:\Users\alank\Documents\CameraApp\Cameraremote_SDK\include\RemoteCli.cpp" />
     <ClCompile Include="C:\Users\alank\Documents\CameraApp\Cameraremote_SDK\include\Text.cpp" />
     <ClCompile Include="C:\Users\alank\Documents\CameraApp\Cameraremote_SDK\include\MessageDefine.cpp" />
     <ClInclude Include="C:\Users\alank\Documents\CameraApp\Cameraremote_SDK\include\CRSDK\CameraRemote_SDK.h" />

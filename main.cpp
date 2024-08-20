@@ -10,10 +10,11 @@
 #include <fstream>
 #include <filesystem>
 #include <iomanip>
-#include <ctime>
+#include <chrono>
 #include <string>
 #include <cstdint>
 #include <cstdlib>
+#include <thread>
 
 //defining namespace
 using namespace SCRSDK;
@@ -23,12 +24,10 @@ class CameraHandler : public IDeviceCallback {
     public:
 
     CameraHandler() : camera_connected(false), camera_handle(0) {std::cout << "Constructor called..." << std::endl;}
-    ~CameraHandler() {cli::tout << "Destructor called..." << std::endl;}
-
     void Initialize(){
 
         std::cout << "Attempting to initialize SDK" <<std::endl;
-        auto ret = Init();
+        auto ret = Init(0);
         if(!ret){
             std::cout << "Initialization failed" << std::endl;
             std::cout << "Terminating..." << std::endl;
@@ -36,7 +35,7 @@ class CameraHandler : public IDeviceCallback {
             std::exit(EXIT_FAILURE);
         }
 
-        std::cout << "Initialization failed" << std::endl;
+        std::cout << "Initialization Success" << std::endl;
     }
 
     void getSDKversion() {
@@ -55,16 +54,18 @@ class CameraHandler : public IDeviceCallback {
     }
 
     void Enumerate(){
-        cli::tout << "Enumerate connected camera devices..." << std::endl;
+        cli::tout << "Enumerating connected camera devices..." << std::endl;
         ICrEnumCameraObjectInfo* camera_list = nullptr;
         auto enum_status = EnumCameraObjects(&camera_list);
         if (CR_FAILED(enum_status) || camera_list == nullptr) {
             cli::tout << "No cameras detected. Connect a camera and retry." << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(5));
             Release();
             std::exit(EXIT_FAILURE);
         }
         auto ncams = camera_list->GetCount();
         cli::tout << "Camera enumeration successful. " << ncams << " detected." << std::endl << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(2));
 
         auto camera_info = camera_list->GetCameraObjectInfo(0);
         cli::text conn_type(camera_info->GetConnectionTypeName());
@@ -76,7 +77,50 @@ class CameraHandler : public IDeviceCallback {
         }
         else id = ((TCHAR*)camera_info->GetId());
         cli::tout << '[' <<  1 << "] " << model.data() << " (" << id.data() << ")" << std::endl;
-        
+
+        cli::tout << std::endl << "Connecting to camera...\n";
+
+        typedef std::shared_ptr<cli::CameraDevice> CameraDevicePtr;
+        typedef std::vector<CameraDevicePtr> CameraDeviceList;
+        CameraDeviceList cameraList; // all
+        std::int32_t cameraNumUniq = 1;
+        std::int32_t selectCamera = 1;
+        auto* camera_i = camera_list->GetCameraObjectInfo(0);
+
+        cli::tout << "Create camera SDK camera callback object.\n";
+        CameraDevicePtr camera = CameraDevicePtr(new cli::CameraDevice(cameraNumUniq, camera_i));
+        cameraList.push_back(camera); // add 1st
+
+        cli::tout << "Release enumerated camera list.\n";
+        std::cout << std::endl << std::endl;
+        camera_list->Release();
+
+        camera->connect(CrSdkControlMode_Remote, CrReconnecting_ON);
+    }
+
+    void setSaveInfo(){
+        try {
+            // Get the current working directory
+            std::cout << "Detecting current folder..." << std::endl;
+            std::filesystem::path currentPath = std::filesystem::current_path();
+            std::cout << "Current folder: " << currentPath << std::endl;
+
+            // Define a subdirectory name
+            std::string subdirectory = "Images";
+
+            // Create a new path variable that combines the current path with the subdirectory
+            std::filesystem::path newPath = currentPath / subdirectory;
+            std::cout << "Image folder: " << newPath << std::endl;
+            std::wstring wideFilePath = newPath.wstring();  // Convert to std::wstring
+            // Now you can use wideFilePath.c_str() to get a wchar_t* pointer
+            std::cout << "Setting save folder..." << std::endl;
+            SCRSDK::SetSaveInfo(camera_handle, const_cast<CrChar*>(wideFilePath.c_str()), L"", -1); 
+            std::cout << "Save folder set" << std::endl; 
+        } 
+        catch (const std::filesystem::filesystem_error& e) {
+            std::cerr << "Error: " << e.what() << std::endl;
+        }
+
     }
 
     private:
@@ -93,5 +137,9 @@ int main(){
     handle.Initialize();
 
     handle.getSDKversion();
-    handle.Enumerate();
+        
+    handle.Enumerate(); 
+
+    std::cout << "Setting save folder..." << std::endl; 
+    handle.setSaveInfo();
 }
