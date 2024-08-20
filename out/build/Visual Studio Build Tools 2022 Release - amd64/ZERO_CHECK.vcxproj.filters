@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\alank\Documents\CameraApp\out\build\Visual Studio Build Tools 2022 Release - amd64\CMakeFiles\62aa387b686464b63c60934016a84b75\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{75885341-7F14-380C-842E-01800C34C674}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
