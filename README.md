@@ -13,4 +13,6 @@ This is a piece of code based off of Sony SDK to download pictures as they are c
 6. Make the project: ```make```
 7. To run use: ```./CameraApp```
 
-#### Use RemoteCli.cpp as reference
+Use RemoteCli.cpp as reference
+
+For camera change SSH password in CameraDevice.cpp line 179

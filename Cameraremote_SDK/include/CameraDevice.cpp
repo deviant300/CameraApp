@@ -162,9 +162,8 @@ bool CameraDevice::connect(SCRSDK::CrSdkControlMode openMode, SCRSDK::CrReconnec
             if (resFp)
             {
                 tout << "fingerprint: \n" << m_fingerprint.c_str() << std::endl;
-                tout << std::endl << "Are you sure you want to continue connecting ? (y/n) > ";
-                text yesno;
-                std::getline(cli::tin, yesno);
+                //tout << std::endl << "Are you sure you want to continue connecting ? (y/n) > ";
+                text yesno = L"y";
                 if (yesno != TEXT("y"))
                 {
                     m_fingerprint.clear();
@@ -174,50 +173,12 @@ bool CameraDevice::connect(SCRSDK::CrSdkControlMode openMode, SCRSDK::CrReconnec
         }
         if (!is_setpassword())
         {
-            cli::tout << "Please SSH password > ";
-            cli::text userPw;
- 
+            //cli::tout << "Please SSH password > ";
+            text userPw = L"G7LE3v";
+            cli::tout << "Using password: " << userPw << "\n \n";
             // Stores the password
             char maskPw = '*';
             char ch_ipt = {};
-
-            // Until condition is true
-            while (true) {
-
-#if defined (_WIN32) || defined(_WIN64)
-                ch_ipt = _getch();
-#else
-                ch_ipt = getch_for_Nix();
-#endif
-
-                // if the ch_ipt
-                if (ch_ipt == Password_Key_Enter) {
-                    tout << std::endl;
-                    break;
-                }
-                else if (ch_ipt == Password_Key_Back
-                    && userPw.length() != 0) {
-                    userPw.pop_back();
-
-                    // Cout statement is very
-                    // important as it will erase
-                    // previously printed character
-                    tout << "\b \b";
-
-                    continue;
-                }
-
-                // Without using this, program
-                // will crash as \b can't be
-                // print in beginning of line
-                else if (ch_ipt == Password_Key_Back
-                    && userPw.length() == 0) {
-                    continue;
-                }
-
-                userPw.push_back(ch_ipt);
-                tout << maskPw;
-            }
 
 #if defined(_WIN32) || (_WIN64)
             mbstate_t mbstate;
@@ -241,6 +202,7 @@ bool CameraDevice::connect(SCRSDK::CrSdkControlMode openMode, SCRSDK::CrReconnec
         m_userPassword.clear();
         return false;
     }
+    cli::tout << "Camera connected" << "\n \n";
     set_save_info();
     return true;
 }

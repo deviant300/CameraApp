@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/dev/Documents/CameraApp/build",
-  "command": "/usr/bin/aarch64-linux-gnu-g++ -I/home/dev/Documents/CameraApp/Cameraremote_SDK/include -g -std=gnu++17 -o CMakeFiles/CameraApp.dir/main.cpp.o -c /home/dev/Documents/CameraApp/main.cpp",
-  "file": "/home/dev/Documents/CameraApp/main.cpp"
-}
-]
