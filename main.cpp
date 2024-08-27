@@ -1,3 +1,8 @@
+//***To find memory leaks***
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
 //***Camera Libraries***
 #include "Cameraremote_SDK\include\CRSDK\CameraRemote_SDK.h"
 #include "Cameraremote_SDK\include\CameraDevice.h"
@@ -53,19 +58,33 @@ class CameraHandler : public IDeviceCallback {
         std::cout << "Initialize Remote SDK...\n";
     }
 
-    void Enumerate(){
+    void Connect(){
         cli::tout << "Enumerating connected camera devices..." << std::endl;
         ICrEnumCameraObjectInfo* camera_list = nullptr;
+        cli::tout << "grabbing details..." << std::endl;
         auto enum_status = EnumCameraObjects(&camera_list);
-        if (CR_FAILED(enum_status) || camera_list == nullptr) {
-            cli::tout << "No cameras detected. Connect a camera and retry." << std::endl;
+        
+        if (CR_FAILED(enum_status)) {
+            cli::tout << "No cameras detected due to an error retry." << std::endl;
+
+            _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG); 
+            _CrtDumpMemoryLeaks();
+
+            Release();
+            std::exit(EXIT_FAILURE);
+        }else if (camera_list == nullptr){
+            cli::tout << "No cameras detected retry." << std::endl;
+            
+            _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG); 
+            _CrtDumpMemoryLeaks();
+            
             std::this_thread::sleep_for(std::chrono::seconds(5));
+            
             Release();
             std::exit(EXIT_FAILURE);
         }
         auto ncams = camera_list->GetCount();
         cli::tout << "Camera enumeration successful. " << ncams << " detected." << std::endl << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(2));
 
         auto camera_info = camera_list->GetCameraObjectInfo(0);
         cli::text conn_type(camera_info->GetConnectionTypeName());
@@ -77,18 +96,14 @@ class CameraHandler : public IDeviceCallback {
         }
         else id = ((TCHAR*)camera_info->GetId());
         cli::tout << '[' <<  1 << "] " << model.data() << " (" << id.data() << ")" << std::endl;
-
-        cli::tout << std::endl << "Connecting to camera...\n";
+        std::cout << "Initiating connection" << std::endl;
 
         typedef std::shared_ptr<cli::CameraDevice> CameraDevicePtr;
         typedef std::vector<CameraDevicePtr> CameraDeviceList;
         CameraDeviceList cameraList; // all
         std::int32_t cameraNumUniq = 1;
-        std::int32_t selectCamera = 1;
-        auto* camera_i = camera_list->GetCameraObjectInfo(0);
-
         cli::tout << "Create camera SDK camera callback object.\n";
-        CameraDevicePtr camera = CameraDevicePtr(new cli::CameraDevice(cameraNumUniq, camera_i));
+        CameraDevicePtr camera = CameraDevicePtr(new cli::CameraDevice(cameraNumUniq, camera_info));
         cameraList.push_back(camera); // add 1st
 
         cli::tout << "Release enumerated camera list.\n";
@@ -96,6 +111,8 @@ class CameraHandler : public IDeviceCallback {
         camera_list->Release();
 
         camera->connect(CrSdkControlMode_Remote, CrReconnecting_ON);
+
+        camera_connected = true;
     }
 
     void setSaveInfo(){
@@ -123,9 +140,31 @@ class CameraHandler : public IDeviceCallback {
 
     }
 
+    void ImageDownload(){
+        
+    }
+
+    void release(){
+        std::cout << "Releasing SDK resources" << std::endl;
+        
+        _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG); 
+        _CrtDumpMemoryLeaks();
+        
+        Release();
+        std::cout << "SDK resources Released" << std::endl;
+    }
+    
+    bool isConnected(){
+        return camera_connected;
+    }
+    /**
+     * @brief 
+     * 
+     */
     private:
     bool camera_connected;
     SCRSDK::CrDeviceHandle camera_handle;
+    SCRSDK::DeviceConnectionVersion version;
 };
 
 int main(){
@@ -134,12 +173,40 @@ int main(){
 
     CameraHandler handle;
     
+    _CrtMemState s1;
+    _CrtMemCheckpoint( &s1 );
+    
     handle.Initialize();
-
     handle.getSDKversion();
-        
-    handle.Enumerate(); 
+    handle.Connect();
 
     std::cout << "Setting save folder..." << std::endl; 
     handle.setSaveInfo();
+
+    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG); 
+    _CrtDumpMemoryLeaks();
+    std::this_thread::sleep_for(std::chrono::seconds(5));
+
+    int i = 0;
+
+    
+    try{
+        while(true){
+            std::this_thread::sleep_for(std::chrono::milliseconds(2));
+            if(handle.isConnected())
+            {
+                std::cout << "connected: " << i << std::endl;
+                i++;
+            }
+            else{
+                std::cout << "disconnected: " << i << std::endl;;
+            }
+        }
+        }catch(const std::exception& e) {
+            std::cerr << "Exception caught: " << e.what() << std::endl;
+        }
+
+    handle.release();
+    std::exit(EXIT_SUCCESS);
+    return 0;
 }

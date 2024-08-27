@@ -1,7 +1,7 @@
 //***Camera Libraries***
-#include "CRSDK\CameraRemote_SDK.h"
-#include "CameraDevice.h"
-#include "Text.h"
+#include "Cameraremote_SDK\include\CRSDK\CameraRemote_SDK.h"
+#include "Cameraremote_SDK\include\CameraDevice.h"
+#include "Cameraremote_SDK\include\Text.h"
 
 
 //***General libraries***
@@ -79,6 +79,34 @@ class CameraHandler : public IDeviceCallback {
         cli::tout << '[' <<  1 << "] " << model.data() << " (" << id.data() << ")" << std::endl;
     }
 
+    void connect(){
+        ICrEnumCameraObjectInfo* camera_list = nullptr;
+        auto enum_status = EnumCameraObjects(&camera_list);
+        ICrEnumCameraObjectInfo* camera_enum = nullptr;
+        CrInt8u device_count = 0;
+        CrError error = SCRSDK::EnumCameraObjects(&camera_enum, device_count);
+        const ICrCameraObjectInfo* camera_info = camera_enum->GetCameraObjectInfo(0);
+
+        typedef std::shared_ptr<cli::CameraDevice> CameraDevicePtr;
+        typedef std::vector<CameraDevicePtr> CameraDeviceList;
+        CameraDeviceList cameraList; // all
+        std::int32_t cameraNumUniq = 1;
+        std::int32_t selectCamera = 1;
+        auto* camera_i = camera_list->GetCameraObjectInfo(0);
+
+        cli::tout << "Create camera SDK camera callback object.\n";
+        CameraDevicePtr camera = CameraDevicePtr(new cli::CameraDevice(cameraNumUniq, camera_i));
+        cameraList.push_back(camera); // add 1st
+
+        cli::tout << "Release enumerated camera list.\n";
+        std::cout << std::endl << std::endl;
+        camera_list->Release();
+
+        camera->connect(CrSdkControlMode_Remote, CrReconnecting_ON);
+
+        camera_connected = true;
+    }
+
     void setSaveInfo(){
         try {
             // Get the current working directory
@@ -96,7 +124,7 @@ class CameraHandler : public IDeviceCallback {
             // Now you can use wideFilePath.c_str() to get a wchar_t* pointer
             std::cout << "Setting save folder..." << std::endl;
             SCRSDK::SetSaveInfo(camera_handle, const_cast<CrChar*>(wideFilePath.c_str()), L"", -1); 
-            std::cout << "Save folder set..." << std::endl; 
+            std::cout << "Save folder set" << std::endl; 
         } 
         catch (const std::filesystem::filesystem_error& e) {
             std::cerr << "Error: " << e.what() << std::endl;
@@ -104,9 +132,52 @@ class CameraHandler : public IDeviceCallback {
 
     }
 
+    void ImageDownload(){
+        
+    }
+
+    void release(){
+        std::cout << "Releasing SDK resources" << std::endl;
+        Release();
+        std::cout << "SDK resources Released" << std::endl;
+    }
+
+    bool isConnected(){
+        std::cout << "Checking connection..." << std::endl;
+
+        ICrEnumCameraObjectInfo* camera_enum = nullptr;
+        CrInt8u device_count = 0;
+        CrError error = SCRSDK::EnumCameraObjects(&camera_enum, device_count);
+        const ICrCameraObjectInfo* camera_info = camera_enum->GetCameraObjectInfo(0);
+
+        if (camera_info == nullptr) {
+            std::cerr << "Camera object is null." << std::endl;
+            return false;
+        }
+        CrInt32u status = camera_info->GetConnectionStatus();
+
+        // Assuming 1 indicates connected, adjust according to the actual SDK documentation
+        if (status == 1) {
+            std::cout << "Camera connected" << std::endl;
+            camera_connected = true;
+            return camera_connected;
+        }
+        
+        else {
+            std::cout << "Camera disconnected" << std::endl;
+            camera_connected = false;
+            return camera_connected;
+        }
+    }
+    
+    /**
+     * @brief 
+     * 
+     */
     private:
     bool camera_connected;
     SCRSDK::CrDeviceHandle camera_handle;
+    SCRSDK::DeviceConnectionVersion version;
 };
 
 int main(){
@@ -116,13 +187,24 @@ int main(){
     CameraHandler handle;
     
     handle.Initialize();
-
     handle.getSDKversion();
-    
+    handle.Enumerate(); 
+    handle.connect();
+
+    std::cout << "Setting save folder..." << std::endl; 
     handle.setSaveInfo();
 
-    std::cout << std::endl << "Setting save folder..." << std::endl; 
-    handle.setSaveInfo();
-    
-    handle.Enumerate(); 
+    while(true){
+        if(handle.isConnected())
+        {
+            continue;
+        }
+        else{
+            break;
+        }
+    }
+
+    handle.release();
+    std::exit(EXIT_SUCCESS);
+    return 0;
 }

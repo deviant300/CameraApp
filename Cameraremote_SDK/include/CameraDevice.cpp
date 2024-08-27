@@ -701,7 +701,6 @@ bool CameraDevice::get_playback_media()
     return true;
 }
 
-
 bool CameraDevice::get_gain_base_sensitivity()
 {
     load_properties();
