@@ -1,0 +1,9 @@
+C:/Users/alank/Documents/CameraApp/out/install/Visual Studio Build Tools 2022 Release - amd64/./CameraApp.exe
+C:/Users/alank/Documents/CameraApp/out/install/Visual Studio Build Tools 2022 Release - amd64/./CrAdapter/Cr_PTP_IP.dll
+C:/Users/alank/Documents/CameraApp/out/install/Visual Studio Build Tools 2022 Release - amd64/./CrAdapter/Cr_PTP_USB.dll
+C:/Users/alank/Documents/CameraApp/out/install/Visual Studio Build Tools 2022 Release - amd64/./CrAdapter/libssh2.dll
+C:/Users/alank/Documents/CameraApp/out/install/Visual Studio Build Tools 2022 Release - amd64/./CrAdapter/libusb-1.0.dll
+C:/Users/alank/Documents/CameraApp/out/install/Visual Studio Build Tools 2022 Release - amd64/./Cr_Core.dll
+C:/Users/alank/Documents/CameraApp/out/install/Visual Studio Build Tools 2022 Release - amd64/./Cr_Core.lib
+C:/Users/alank/Documents/CameraApp/out/install/Visual Studio Build Tools 2022 Release - amd64/./monitor_protocol.dll
+C:/Users/alank/Documents/CameraApp/out/install/Visual Studio Build Tools 2022 Release - amd64/./monitor_protocol_pf.dll

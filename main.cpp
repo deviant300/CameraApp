@@ -27,10 +27,10 @@ using namespace SCRSDK;
 //Creating class and defining functions
 class CameraHandler : public IDeviceCallback {
     public:
-
     CameraHandler() : camera_connected(false), camera_handle(0) {std::cout << "Constructor called..." << std::endl;}
+    ~CameraHandler() {std::cout << "Destructor called..." << std::endl;};
+    
     void Initialize(){
-
         std::cout << "Attempting to initialize SDK" <<std::endl;
         auto ret = Init(0);
         if(!ret){
@@ -39,22 +39,18 @@ class CameraHandler : public IDeviceCallback {
             Release();
             std::exit(EXIT_FAILURE);
         }
-
         std::cout << "Initialization Success" << std::endl;
     }
 
     void getSDKversion() {
         std::cout << "RemoteSampleApp v1.12.00 running..." << std::endl << std::endl;
-
         CrInt32u version = GetSDKVersion();
         int major = (version & 0xFF000000) >> 24;
         int minor = (version & 0x00FF0000) >> 16;
         int patch = (version & 0x0000FF00) >> 8;
         // int reserved = (version & 0x000000FF);
-
         std::cout << "Remote SDK version: ";
         std::cout << major << "." << minor << "." << std::setfill(char('0')) << std::setw(2) << patch << std::endl;
-
         std::cout << "Initialize Remote SDK...\n";
     }
 
@@ -66,26 +62,16 @@ class CameraHandler : public IDeviceCallback {
         
         if (CR_FAILED(enum_status)) {
             cli::tout << "No cameras detected due to an error retry." << std::endl;
-
-            _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG); 
-            _CrtDumpMemoryLeaks();
-
             Release();
             std::exit(EXIT_FAILURE);
         }else if (camera_list == nullptr){
             cli::tout << "No cameras detected retry." << std::endl;
-            
-            _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG); 
-            _CrtDumpMemoryLeaks();
-            
             std::this_thread::sleep_for(std::chrono::seconds(5));
-            
             Release();
             std::exit(EXIT_FAILURE);
         }
         auto ncams = camera_list->GetCount();
         cli::tout << "Camera enumeration successful. " << ncams << " detected." << std::endl << std::endl;
-
         auto camera_info = camera_list->GetCameraObjectInfo(0);
         cli::text conn_type(camera_info->GetConnectionTypeName());
         cli::text model(camera_info->GetModel());
@@ -97,7 +83,6 @@ class CameraHandler : public IDeviceCallback {
         else id = ((TCHAR*)camera_info->GetId());
         cli::tout << '[' <<  1 << "] " << model.data() << " (" << id.data() << ")" << std::endl;
         std::cout << "Initiating connection" << std::endl;
-
         typedef std::shared_ptr<cli::CameraDevice> CameraDevicePtr;
         typedef std::vector<CameraDevicePtr> CameraDeviceList;
         CameraDeviceList cameraList; // all
@@ -105,26 +90,23 @@ class CameraHandler : public IDeviceCallback {
         cli::tout << "Create camera SDK camera callback object.\n";
         CameraDevicePtr camera = CameraDevicePtr(new cli::CameraDevice(cameraNumUniq, camera_info));
         cameraList.push_back(camera); // add 1st
-
         cli::tout << "Release enumerated camera list.\n";
         std::cout << std::endl << std::endl;
         camera_list->Release();
-
         camera->connect(CrSdkControlMode_Remote, CrReconnecting_ON);
-
         camera_connected = true;
+        
+        delete camera_list, enum_status;
     }
-
+    
     void setSaveInfo(){
         try {
             // Get the current working directory
             std::cout << "Detecting current folder..." << std::endl;
             std::filesystem::path currentPath = std::filesystem::current_path();
             std::cout << "Current folder: " << currentPath << std::endl;
-
             // Define a subdirectory name
             std::string subdirectory = "Images";
-
             // Create a new path variable that combines the current path with the subdirectory
             std::filesystem::path newPath = currentPath / subdirectory;
             std::cout << "Image folder: " << newPath << std::endl;
@@ -137,18 +119,14 @@ class CameraHandler : public IDeviceCallback {
         catch (const std::filesystem::filesystem_error& e) {
             std::cerr << "Error: " << e.what() << std::endl;
         }
-
     }
-
+    
     void ImageDownload(){
         
     }
 
     void release(){
         std::cout << "Releasing SDK resources" << std::endl;
-        
-        _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG); 
-        _CrtDumpMemoryLeaks();
         
         Release();
         std::cout << "SDK resources Released" << std::endl;
@@ -170,25 +148,17 @@ class CameraHandler : public IDeviceCallback {
 int main(){
     // Change global locale to native locale
     std::locale::global(std::locale(""));
-
     CameraHandler handle;
-    
-    _CrtMemState s1;
-    _CrtMemCheckpoint( &s1 );
     
     handle.Initialize();
     handle.getSDKversion();
     handle.Connect();
-
     std::cout << "Setting save folder..." << std::endl; 
-    handle.setSaveInfo();
-
-    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG); 
-    _CrtDumpMemoryLeaks();
     std::this_thread::sleep_for(std::chrono::seconds(5));
-
+    handle.setSaveInfo();
+    std::this_thread::sleep_for(std::chrono::seconds(5));
+    
     int i = 0;
-
     
     try{
         while(true){
@@ -197,15 +167,15 @@ int main(){
             {
                 std::cout << "connected: " << i << std::endl;
                 i++;
+                std::this_thread::sleep_for(std::chrono::seconds(1));
             }
             else{
-                std::cout << "disconnected: " << i << std::endl;;
+                std::cout << "disconnected: " << i << std::endl;
             }
         }
         }catch(const std::exception& e) {
             std::cerr << "Exception caught: " << e.what() << std::endl;
         }
-
     handle.release();
     std::exit(EXIT_SUCCESS);
     return 0;
