@@ -5,6 +5,14 @@ import os
 import time
 import multiprocessing
 import subprocess
+import boto3
+from botocore.exceptions import NoCredentialsError, ClientError
+
+def GetPwd():
+    os.chdir('...')
+    pwd = os.getcwd()
+    print(f"previous working directory is: {pwd}")
+    return pwd
 
 def GetCwd():
     cwd = os.getcwd()
@@ -74,17 +82,53 @@ def monitor_daemon(executable_path):
         print("Daemon process exited. Restarting in 1 seconds...")
         time.sleep(1)  # Delay before restarting the process
 
-def checknewimages(folder_path, interval):
+def upload_to_s3(LOCAL_FILE, NAME_FOR_S3):
     """
-    Monitors a folder for new image files and prints their names when detected.
+    Upload a file to an S3 bucket.
+
+    Args:
+        file_path (str): Path to the file to upload.
+        bucket_name (str): S3 bucket name.
+        s3_client (boto3.client): Boto3 S3 client object.
+        object_name (str): S3 object name. If not specified, file_path name is used.
+    
+    Returns:
+        bool: True if the file was uploaded, else False.
+    """
+    AWS_S3_BUCKET_NAME = 'mappting'
+    AWS_REGION = 'us-east-1'
+    AWS_ACCESS_KEY = 'AKIAZI2LCLK4KWM4XQOS'
+    AWS_SECRET_KEY = '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'
+    
+    print('in main method')
+
+    s3_client = boto3.client(
+        service_name='s3',
+        region_name=AWS_REGION,
+        aws_access_key_id=AWS_ACCESS_KEY,
+        aws_secret_access_key=AWS_SECRET_KEY
+    )
+
+    response = s3_client.upload_file(LOCAL_FILE, AWS_S3_BUCKET_NAME, NAME_FOR_S3)
+
+    print(f'upload_log_to_aws response: {response}')
+
+def uploadimages(folder_path, interval):
+    """
+    Monitors a folder for new image files, uploads them to AWS S3, and removes them from the folder.
     
     Args:
         folder_path (str): Path to the folder to monitor.
         interval (int): Time interval (in seconds) to wait between checks.
+        bucket_name (str): S3 bucket name where images will be uploaded.
     """
+    # Initialize the S3 client
+    s3_client = boto3.client('s3')
+
     image_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff'}
     previous_files = set(os.listdir(folder_path))
     print("Monitoring folder for new images...")
+
     while True:
         time.sleep(interval)
         # Get the current set of files in the folder
@@ -95,8 +139,16 @@ def checknewimages(folder_path, interval):
         new_images = [f for f in new_files if os.path.splitext(f)[1].lower() in image_extensions]
         if new_images:
             print(f"New image(s) added: {', '.join(new_images)}")
-        # Update the previous file set
-    
+            for image in new_images:
+                image_path = os.path.join(folder_path, image)
+                # Upload the image to S3
+                if upload_to_s3(image_path, image_path):
+                    # Remove the image file from the folder if the upload is successful
+                    os.remove(image_path)
+                    print(f"Removed {image_path} from folder after upload.")
+            # Update the previous file set for the next iteration
+            previous_files.update(new_files)
+
 def main():
     # Store the path in a variable
     executable_path = GetCwd()  # Replace with your actual executable path
@@ -107,17 +159,11 @@ def main():
     )
     # Start the monitor process
     monitor_process.start()
-    print("Daemon monitor started. Now executing other code...")
-    # Continue with other code execution
-    for i in range(5):
-        print(f"Performing task {i + 1}")
-        time.sleep(1)  # Simulate time-consuming task
-    print("All tasks completed while daemon monitor is running.")
-    
-    if os.name() == 'nt':
-        imageDir = executable_path + '\Images'
-    else:
-        imageDir = executable_path + '/Images'
+    print("Daemon monitor started. Now tracking image file uploads...")
+    # Continue with other code execution  
+    pwd = GetPwd() 
+    imageDir = pwd + '\Images'
+    uploadimages(imageDir, 2.5)
 
 if __name__ == "__main__":
     try:

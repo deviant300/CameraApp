@@ -3,7 +3,10 @@
 
 This is a piece of code based off of Sony SDK to download pictures as they are clicked and directly store them on a raspberry pi or NVIDIA Jetson.
 
-## How to run
+## How to run -new
+Run run.py
+
+## How to run -old
 
 1. Change directories to the folder where main.cpp is stored
 2. Remove the build folder

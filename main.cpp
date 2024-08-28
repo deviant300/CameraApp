@@ -95,8 +95,6 @@ class CameraHandler : public IDeviceCallback {
         camera_list->Release();
         camera->connect(CrSdkControlMode_Remote, CrReconnecting_ON);
         camera_connected = true;
-        
-        delete camera_list, enum_status;
     }
     
     void setSaveInfo(){
@@ -154,9 +152,9 @@ int main(){
     handle.getSDKversion();
     handle.Connect();
     std::cout << "Setting save folder..." << std::endl; 
-    std::this_thread::sleep_for(std::chrono::seconds(5));
+    // std::this_thread::sleep_for(std::chrono::seconds(5));
     handle.setSaveInfo();
-    std::this_thread::sleep_for(std::chrono::seconds(5));
+    // std::this_thread::sleep_for(std::chrono::seconds(5));
     
     int i = 0;
     
@@ -167,7 +165,7 @@ int main(){
             {
                 std::cout << "connected: " << i << std::endl;
                 i++;
-                std::this_thread::sleep_for(std::chrono::seconds(1));
+                // std::this_thread::sleep_for(std::chrono::seconds(1));
             }
             else{
                 std::cout << "disconnected: " << i << std::endl;
