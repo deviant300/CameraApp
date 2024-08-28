@@ -83,17 +83,11 @@ def monitor_daemon(executable_path):
         time.sleep(1)  # Delay before restarting the process
 
 def upload_to_s3(LOCAL_FILE, NAME_FOR_S3):
-    """
-    Upload a file to an S3 bucket.
+    """Uploads file to AWS S3 bucket
 
     Args:
-        file_path (str): Path to the file to upload.
-        bucket_name (str): S3 bucket name.
-        s3_client (boto3.client): Boto3 S3 client object.
-        object_name (str): S3 object name. If not specified, file_path name is used.
-    
-    Returns:
-        bool: True if the file was uploaded, else False.
+        LOCAL_FILE (str): filepath to image file to be uploaded
+        NAME_FOR_S3 (str): Name of file to be uploaded
     """
     AWS_S3_BUCKET_NAME = 'mappting'
     AWS_REGION = 'us-east-1'
@@ -120,7 +114,6 @@ def uploadimages(folder_path, interval):
     Args:
         folder_path (str): Path to the folder to monitor.
         interval (int): Time interval (in seconds) to wait between checks.
-        bucket_name (str): S3 bucket name where images will be uploaded.
     """
     # Initialize the S3 client
     s3_client = boto3.client('s3')
@@ -163,7 +156,7 @@ def main():
     # Continue with other code execution  
     pwd = GetPwd() 
     imageDir = pwd + '\Images'
-    uploadimages(imageDir, 2.5)
+    uploadimages(imageDir, 1)
 
 if __name__ == "__main__":
     try:
