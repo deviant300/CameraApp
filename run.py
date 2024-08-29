@@ -106,6 +106,7 @@ def read_aws_keys_from_csv():
                 # Assuming the CSV has headers 'AWSAccessKeyId' and 'AWSSecretKey'
                 credentials['aws_access_key_id'] = row['AWSAccessKeyId']
                 credentials['aws_secret_access_key'] = row['AWSSecretKey']
+                credentials['drone_id'] = row['Drone ID']
                 break  # Read only the first row if credentials are stored in a single row
 
         print("AWS credentials read successfully.")
