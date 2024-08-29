@@ -80,6 +80,7 @@ def monitor_daemon(executable_path):
         # Wait for the process to exit
         daemon_process.join()
         print("Daemon process exited. Restarting in 1 seconds...")
+        print('\n')
         time.sleep(1)  # Delay before restarting the process
 
 def upload_to_s3(LOCAL_FILE, NAME_FOR_S3):
@@ -91,20 +92,23 @@ def upload_to_s3(LOCAL_FILE, NAME_FOR_S3):
     """
     AWS_S3_BUCKET_NAME = 'mappting'
     AWS_REGION = 'us-east-1'
-    AWS_ACCESS_KEY=''
-    AWS_ACCESS_KEY=''
+    ACCESS_KEY = 'AKIAZI2LCLK4MC6ZQ7N2'
+    SECRET_KEY = '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'
     print('in main method')
 
     s3_client = boto3.client(
         service_name='s3',
         region_name=AWS_REGION,
-        aws_access_key_id=AWS_ACCESS_KEY,
-        aws_secret_access_key=AWS_ACCESS_KEY
+        aws_access_key_id=ACCESS_KEY,
+        aws_secret_access_key=SECRET_KEY
     )
 
     response = s3_client.upload_file(LOCAL_FILE, AWS_S3_BUCKET_NAME, NAME_FOR_S3)
 
-    print(f'upload_log_to_aws response: {response}')
+    if response is None:
+        print(f'upload of {LOCAL_FILE} success')
+    else:
+        print(f'upload_log_to_aws response: {response}')
 
 def uploadimages(folder_path, interval):
     """
@@ -120,6 +124,7 @@ def uploadimages(folder_path, interval):
     image_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff'}
     previous_files = set(os.listdir(folder_path))
     print("Monitoring folder for new images...")
+    print('\n')
 
     while True:
         time.sleep(interval)
@@ -134,14 +139,14 @@ def uploadimages(folder_path, interval):
             for image in new_images:
                 image_path = os.path.join(folder_path, image)
                 # Upload the image to S3
-                if upload_to_s3(image_path, image_path):
-                    # Remove the image file from the folder if the upload is successful
-                    os.remove(image_path)
-                    print(f"Removed {image_path} from folder after upload.")
+                upload_to_s3(image_path, image_path)
+                # Remove the image file from the folder if the upload is successful
+                os.remove(image_path)
+                print(f"Removed {image_path} from folder after upload.")
             # Update the previous file set for the next iteration
             previous_files.update(new_files)
 
-def main():
+def Run_exe_upload_img():
     # Store the path in a variable
     executable_path = GetCwd()  # Replace with your actual executable path
     # Start monitoring the daemon process
@@ -159,7 +164,7 @@ def main():
 
 if __name__ == "__main__":
     try:
-        main()
+        Run_exe_upload_img()
     except KeyboardInterrupt:
-        main.stop()
+        Run_exe_upload_img.stop()
         print("Application aborted...")
