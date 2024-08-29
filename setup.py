@@ -214,6 +214,7 @@ if __name__ == "__main__":
     appManager = CameraAppManager()
     
     try:
-        appManager.Run_exe_upload_img()
+        appManager.start()
     except KeyboardInterrupt:
+        appManager.stop()
         print("Application aborted by user.")
