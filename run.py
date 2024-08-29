@@ -5,6 +5,7 @@ import os
 import time
 import multiprocessing
 import subprocess
+import csv
 import boto3
 from botocore.exceptions import NoCredentialsError, ClientError
 
@@ -83,7 +84,41 @@ def monitor_daemon(executable_path):
         print('\n')
         time.sleep(1)  # Delay before restarting the process
 
-def upload_to_s3(LOCAL_FILE, NAME_FOR_S3):
+def read_aws_keys_from_csv():
+    """
+    Reads AWS credentials from a CSV file named 'Info.csv' located in the same directory as the Python script.
+    
+    Returns:
+        dict: A dictionary with AWS credentials { 'aws_access_key_id': '...', 'aws_secret_access_key': '...' }
+    """
+    # File name assuming it's in the same directory
+    file_name = 'Info.csv'
+    
+    # Construct the path to the file in the same directory
+    file_path = os.path.join(os.path.dirname(__file__), file_name)
+
+    credentials = {}
+
+    try:
+        with open(file_path, mode='r') as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                # Assuming the CSV has headers 'AWSAccessKeyId' and 'AWSSecretKey'
+                credentials['aws_access_key_id'] = row['AWSAccessKeyId']
+                credentials['aws_secret_access_key'] = row['AWSSecretKey']
+                break  # Read only the first row if credentials are stored in a single row
+
+        print("AWS credentials read successfully.")
+        return credentials
+
+    except FileNotFoundError:
+        print(f"Error: The file {file_name} was not found in the current directory.")
+    except KeyError as e:
+        print(f"Error: The expected key {e} is not found in the CSV file headers.")
+    except Exception as e:
+        print(f"An error occurred while reading the AWS credentials: {e}")
+
+def upload_to_s3(LOCAL_FILE, NAME_FOR_S3, aws_credentials):
     """Uploads file to AWS S3 bucket
 
     Args:
@@ -92,15 +127,13 @@ def upload_to_s3(LOCAL_FILE, NAME_FOR_S3):
     """
     AWS_S3_BUCKET_NAME = 'mappting'
     AWS_REGION = 'us-east-1'
-    ACCESS_KEY = 'AKIAZI2LCLK4MC6ZQ7N2'
-    SECRET_KEY = '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'
     print('in main method')
 
     s3_client = boto3.client(
         service_name='s3',
         region_name=AWS_REGION,
-        aws_access_key_id=ACCESS_KEY,
-        aws_secret_access_key=SECRET_KEY
+        aws_access_key_id=aws_credentials['aws_access_key_id'],
+        aws_secret_access_key=aws_credentials['aws_secret_access_key']
     )
 
     response = s3_client.upload_file(LOCAL_FILE, AWS_S3_BUCKET_NAME, NAME_FOR_S3)
@@ -110,7 +143,7 @@ def upload_to_s3(LOCAL_FILE, NAME_FOR_S3):
     else:
         print(f'upload_log_to_aws response: {response}')
 
-def uploadimages(folder_path, interval):
+def uploadimages(folder_path, interval, aws_credentials):
     """
     Monitors a folder for new image files, uploads them to AWS S3, and removes them from the folder.
     
@@ -139,7 +172,7 @@ def uploadimages(folder_path, interval):
             for image in new_images:
                 image_path = os.path.join(folder_path, image)
                 # Upload the image to S3
-                upload_to_s3(image_path, image_path)
+                upload_to_s3(image_path, image_path, aws_credentials)
                 # Remove the image file from the folder if the upload is successful
                 os.remove(image_path)
                 print(f"Removed {image_path} from folder after upload.")
@@ -148,7 +181,7 @@ def uploadimages(folder_path, interval):
 
 def Run_exe_upload_img():
     # Store the path in a variable
-    executable_path = GetCwd()  # Replace with your actual executable path
+    executable_path = GetCwd() 
     # Start monitoring the daemon process
     monitor_process = multiprocessing.Process(
         target=monitor_daemon,
@@ -157,10 +190,13 @@ def Run_exe_upload_img():
     # Start the monitor process
     monitor_process.start()
     print("Daemon monitor started. Now tracking image file uploads...")
+    
+    aws_credentials = read_aws_keys_from_csv()
+    
     # Continue with other code execution  
     pwd = GetPwd() 
     imageDir = pwd + '\Images'
-    uploadimages(imageDir, 1)
+    uploadimages(imageDir, 1, aws_credentials)
 
 if __name__ == "__main__":
     try:
