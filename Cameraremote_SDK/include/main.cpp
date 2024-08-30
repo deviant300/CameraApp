@@ -18,7 +18,7 @@ bool Init(){
     return true;
 }
 
-void terminate(){
+void Terminate(){
     SCRSDK::Release();
     std::exit(0);
 }
@@ -126,7 +126,9 @@ SCRSDK::ICrCameraObjectInfo *CreateUSBObject()
     SCRSDK::CrError err = SCRSDK::CreateCameraObjectInfoUSBConnection(&pCam, SCRSDK::CrCameraDeviceModel_ILX_LR1, (CrInt8u *)serialNum); // ILX-LR1
     if (err == SCRSDK::CrError_None && pCam != nullptr)
     {
+        std::cout << "Failed to create camera object" << std::endl;
         return pCam;
     }
+    std::cout << "Created camera object" << std::endl;
     return nullptr;
 }
