@@ -1,4 +1,0 @@
-C:/Users/alank/Documents/CameraApp/out/build/Visual Studio Build Tools 2022 Release - amd64/CMakeFiles/CameraApp.dir
-C:/Users/alank/Documents/CameraApp/out/build/Visual Studio Build Tools 2022 Release - amd64/CMakeFiles/INSTALL.dir
-C:/Users/alank/Documents/CameraApp/out/build/Visual Studio Build Tools 2022 Release - amd64/CMakeFiles/ALL_BUILD.dir
-C:/Users/alank/Documents/CameraApp/out/build/Visual Studio Build Tools 2022 Release - amd64/CMakeFiles/ZERO_CHECK.dir
