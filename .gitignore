@@ -1,6 +1,4 @@
 # ignore all .csv files
 *.csv
-# ignore all .md files
-*.md
 # ignore all files in any directory named build
 out/

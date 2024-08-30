@@ -15,12 +15,22 @@ class CameraAppManager:
         self.monitor_process = None
         
     def GetPwd():
+        """Returns the directory containing current director. Note: Looks from base directory so os.chdir('...') will need to be changed when code moves folders
+
+        Returns:
+            str: path to previous directory in /././. format
+        """
         os.chdir('...')
         pwd = os.getcwd()
         print(f"previous working directory is: {pwd}")
         return pwd
 
     def GetCwd():
+        """Get path to current directory
+
+        Returns:
+            str: path to current directory in /././. format
+        """
         cwd = os.getcwd()
         print("current working directory is: ")
         print(cwd)
@@ -124,7 +134,7 @@ class CameraAppManager:
         except Exception as e:
             print(f"An error occurred while reading the AWS credentials: {e}")
 
-    def upload_to_s3(LOCAL_FILE, NAME_FOR_S3, aws_credentials):
+    def upload_to_s3(LOCAL_FILE, i, aws_credentials):
         """Uploads file to AWS S3 bucket
 
         Args:
@@ -142,14 +152,14 @@ class CameraAppManager:
             aws_secret_access_key=aws_credentials['aws_secret_access_key']
         )
 
-        response = s3_client.upload_file(LOCAL_FILE, AWS_S3_BUCKET_NAME, NAME_FOR_S3)
+        response = s3_client.upload_file(LOCAL_FILE, AWS_S3_BUCKET_NAME, i)
 
         if response is None:
             print(f'upload of {LOCAL_FILE} success')
         else:
             print(f'upload_log_to_aws response: {response}')
 
-    def uploadimages(self, folder_path, interval, aws_credentials):
+    def uploadimages(self, folder_path, interval, aws_credentials, i):
         """
         Monitors a folder for new image files, uploads them to AWS S3, and removes them from the folder.
         
@@ -164,7 +174,10 @@ class CameraAppManager:
         previous_files = set(os.listdir(folder_path))
         print("Monitoring folder for new images...")
         print('\n')
-
+        
+        droneid = aws_credentials['Drone ID']
+        aws_file_name = droneid + '_' + str(i)
+        
         while True:
             time.sleep(interval)
             # Get the current set of files in the folder
@@ -176,16 +189,17 @@ class CameraAppManager:
             if new_images:
                 print(f"New image(s) added: {', '.join(new_images)}")
                 for image in new_images:
+                    i = i + 1
                     image_path = os.path.join(folder_path, image)
                     # Upload the image to S3
-                    self.upload_to_s3(image_path, image_path, aws_credentials)
+                    self.upload_to_s3(image_path, aws_file_name, aws_credentials)
                     # Remove the image file from the folder if the upload is successful
                     os.remove(image_path)
                     print(f"Removed {image_path} from folder after upload.")
                 # Update the previous file set for the next iteration
                 previous_files.update(new_files)
 
-    def start(self):
+    def start(self, i):
         # Store the path in a variable
         executable_path = self.GetCwd() 
         # Start monitoring the daemon process
@@ -202,7 +216,7 @@ class CameraAppManager:
         # Continue with other code execution  
         pwd = self.GetPwd() 
         imageDir = pwd + '\Images'
-        self.uploadimages(imageDir, 1, aws_credentials)
+        self.uploadimages(imageDir, 1, aws_credentials, i)
 
     def stop(self):
         if self.monitor_process and self.monitor_process.is_alive():
@@ -213,8 +227,10 @@ class CameraAppManager:
 if __name__ == "__main__":
     appManager = CameraAppManager()
     
+    i = 0
+    
     try:
-        appManager.start()
+        appManager.start(i)
     except KeyboardInterrupt:
         appManager.stop()
         print("Application aborted by user.")
