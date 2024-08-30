@@ -16,6 +16,8 @@ Run run.py
 6. Make the project: ```make```
 7. To run use: ```./CameraApp```
 
+#### always build the project after downloading from github
+
 Use RemoteCli.cpp as reference
 
 For camera change SSH password in CameraDevice.cpp line 179
