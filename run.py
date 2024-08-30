@@ -14,7 +14,7 @@ class CameraAppManager:
     def __init__(self):
         self.monitor_process = None
         
-    def GetPwd():
+    def GetPwd(self):
         """Returns the directory containing current director. Note: Looks from base directory so os.chdir('...') will need to be changed when code moves folders
 
         Returns:
@@ -25,7 +25,7 @@ class CameraAppManager:
         print(f"previous working directory is: {pwd}")
         return pwd
 
-    def GetCwd():
+    def GetCwd(self):
         """Get path to current directory
 
         Returns:
@@ -41,7 +41,7 @@ class CameraAppManager:
         
         return exe_path
         
-    def run_daemon(path):
+    def run_daemon(self, path):
         """
         Function to run an executable as a background process and display output.
         
@@ -99,7 +99,7 @@ class CameraAppManager:
             print('\n')
             time.sleep(1)  # Delay before restarting the process
 
-    def read_aws_keys_from_csv():
+    def read_aws_keys_from_csv(self):
         """
         Reads AWS credentials from a CSV file named 'Info.csv' located in the same directory as the Python script.
         
@@ -115,16 +115,21 @@ class CameraAppManager:
         credentials = {}
 
         try:
-            with open(file_path, mode='r') as file:
+            with open(file_path, mode='r', encoding='utf-8-sig') as file:  # 'utf-8-sig' will handle BOM if present
                 csv_reader = csv.DictReader(file)
+                headers = csv_reader.fieldnames
+                print(f"CSV Headers: {headers}")
+
                 for row in csv_reader:
-                    # Assuming the CSV has headers 'AWSAccessKeyId' and 'AWSSecretKey'
-                    credentials['aws_access_key_id'] = row['AWSAccessKeyId']
-                    credentials['aws_secret_access_key'] = row['AWSSecretKey']
-                    credentials['drone_id'] = row['Drone ID']
+                    print(f"Row data: {row}")
+                    # Use strip to remove any unexpected whitespace
+                    credentials['aws_access_key_id'] = row['Access key ID'].strip()
+                    credentials['aws_secret_access_key'] = row['Secret access key'].strip()
+                    credentials['drone_id'] = row['Drone ID'].strip()
                     break  # Read only the first row if credentials are stored in a single row
 
             print("AWS credentials read successfully.")
+            print(f"Credentials: {credentials}")  # Print credentials dictionary
             return credentials
 
         except FileNotFoundError:
@@ -134,13 +139,15 @@ class CameraAppManager:
         except Exception as e:
             print(f"An error occurred while reading the AWS credentials: {e}")
 
-    def upload_to_s3(LOCAL_FILE, i, aws_credentials):
+    def upload_to_s3(self, LOCAL_FILE, aws_credentials):
         """Uploads file to AWS S3 bucket
 
         Args:
             LOCAL_FILE (str): filepath to image file to be uploaded
             NAME_FOR_S3 (str): Name of file to be uploaded
         """
+        global i
+        
         AWS_S3_BUCKET_NAME = 'mappting'
         AWS_REGION = 'us-east-1'
         print('in main method')
@@ -152,14 +159,15 @@ class CameraAppManager:
             aws_secret_access_key=aws_credentials['aws_secret_access_key']
         )
 
-        response = s3_client.upload_file(LOCAL_FILE, AWS_S3_BUCKET_NAME, i)
+        file_name = aws_credentials['drone_id'] + '_' + str(i)
+        response = s3_client.upload_file(LOCAL_FILE, AWS_S3_BUCKET_NAME, file_name)
 
         if response is None:
             print(f'upload of {LOCAL_FILE} success')
         else:
             print(f'upload_log_to_aws response: {response}')
 
-    def uploadimages(self, folder_path, interval, aws_credentials, i):
+    def uploadimages(self, folder_path, interval, aws_credentials):
         """
         Monitors a folder for new image files, uploads them to AWS S3, and removes them from the folder.
         
@@ -168,14 +176,21 @@ class CameraAppManager:
             interval (int): Time interval (in seconds) to wait between checks.
         """
         # Initialize the S3 client
+        global i
+        
         s3_client = boto3.client('s3')
 
         image_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff'}
         previous_files = set(os.listdir(folder_path))
         print("Monitoring folder for new images...")
         print('\n')
-        
-        droneid = aws_credentials['Drone ID']
+
+        # Use the correct key from the credentials dictionary
+        droneid = aws_credentials.get('drone_id', '').strip()  # Get drone_id or default to an empty string
+        if not droneid:
+            print("Error: 'Drone ID' is missing from AWS credentials.")
+            return
+
         aws_file_name = droneid + '_' + str(i)
         
         while True:
@@ -192,14 +207,15 @@ class CameraAppManager:
                     i = i + 1
                     image_path = os.path.join(folder_path, image)
                     # Upload the image to S3
-                    self.upload_to_s3(image_path, aws_file_name, aws_credentials)
+                    self.upload_to_s3(image_path, aws_credentials)
                     # Remove the image file from the folder if the upload is successful
                     os.remove(image_path)
                     print(f"Removed {image_path} from folder after upload.")
                 # Update the previous file set for the next iteration
                 previous_files.update(new_files)
 
-    def start(self, i):
+    def start(self):
+        global i
         # Store the path in a variable
         executable_path = self.GetCwd() 
         # Start monitoring the daemon process
@@ -216,7 +232,7 @@ class CameraAppManager:
         # Continue with other code execution  
         pwd = self.GetPwd() 
         imageDir = pwd + '\Images'
-        self.uploadimages(imageDir, 1, aws_credentials, i)
+        self.uploadimages(imageDir, 1, aws_credentials)
 
     def stop(self):
         if self.monitor_process and self.monitor_process.is_alive():
@@ -224,13 +240,14 @@ class CameraAppManager:
             self.monitor_process.join()
         print("Stopped all processes.")
 
+
+
 if __name__ == "__main__":
     appManager = CameraAppManager()
     
     i = 0
-    
     try:
-        appManager.start(i)
+        appManager.start()
     except KeyboardInterrupt:
         appManager.stop()
         print("Application aborted by user.")
