@@ -4,10 +4,10 @@
 This is a piece of code based off of Sony SDK to download pictures as they are clicked and directly store them on a raspberry pi or NVIDIA Jetson.
 
 ## How to run -new
-Run run.py
+Run ```run.py```
 
 ## How to run -old
-
+(you will have to change the directory in run.py after running this)
 1. Change directories to the folder where main.cpp is stored
 2. Remove the build folder
 3. In CMakeLists.txt file change the file paths for libraries and directories to match their actual location in Cameraremote_SDK
