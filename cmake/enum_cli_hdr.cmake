@@ -6,8 +6,8 @@ message("[${PROJECT_NAME}] Indexing header files..")
 set(__cli_hdrs
     ${__cli_hdr_dir}/CameraDevice.h
     ${__cli_hdr_dir}/ConnectionInfo.h
-    ${__cli_hdr_dir}/main.h
     ${__cli_hdr_dir}/PropertyValueTable.h
+    ${__cli_hdr_dir}/main.h
     ${__cli_hdr_dir}/Text.h
     ${__cli_hdr_dir}/MessageDefine.h
 )
