@@ -146,14 +146,14 @@ int main(){
     handle.Initialize();
     handle.getSDKversion();
     handle.Connect();
-    std::cout << "Setting save folder..." << std::endl; 
+    // std::cout << "Setting save folder..." << std::endl; 
     // std::this_thread::sleep_for(std::chrono::seconds(5));
-    handle.setSaveInfo();
-    // std::this_thread::sleep_for(std::chrono::seconds(5));
-    while(true){
-        printf("Connected");
-    }
-    handle.release();
+    // handle.setSaveInfo();
+    // // std::this_thread::sleep_for(std::chrono::seconds(5));
+    // while(true){
+    //     printf("Connected");
+    // }
+    // handle.release();
     std::exit(EXIT_SUCCESS);
     return 0;
 }
