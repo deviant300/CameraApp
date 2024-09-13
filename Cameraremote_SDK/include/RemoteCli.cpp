@@ -138,7 +138,7 @@ int main()
     CameraDevicePtr camera = CameraDevicePtr(new cli::CameraDevice(cameraNumUniq, camera_info));
     cameraList.push_back(camera); // add 1st
 
-    cli::tout << "Release enumerated camera list.\n";
+    cli::tout << "Release enumerated camera .\n";
     camera_list->Release();
 
     // Overview

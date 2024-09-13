@@ -152,7 +152,7 @@ bool CameraDevice::getfingerprint()
 
 bool CameraDevice::connect(SCRSDK::CrSdkControlMode openMode, SCRSDK::CrReconnectingSet reconnect)
 {
-    const char* inputId = "admin";
+    const char* inputId = "G7LE3v";
     char inputPassword[32] = { 0 };
     if (SDK::CrSSHsupportValue::CrSSHsupport_ON == get_sshsupport())
     {
@@ -161,7 +161,7 @@ bool CameraDevice::connect(SCRSDK::CrSdkControlMode openMode, SCRSDK::CrReconnec
             bool resFp = getfingerprint();
             if (resFp)
             {
-                tout << "fingerprint: \n" << m_fingerprint.c_str() << std::endl;
+                tout << "Cam fingerprint: \n" << m_fingerprint.c_str() << std::endl;
                 //tout << std::endl << "Are you sure you want to continue connecting ? (y/n) > ";
                 text yesno = L"y";
                 if (yesno != TEXT("y"))
@@ -174,8 +174,8 @@ bool CameraDevice::connect(SCRSDK::CrSdkControlMode openMode, SCRSDK::CrReconnec
         if (!is_setpassword())
         {
             //cli::tout << "Please SSH password > ";
-            text userPw = L"G7LE3v";
-            cli::tout << "Using password: " << userPw << "\n \n";
+            text userPw = L"t6P2R8Jh";
+            cli::tout << "Using pass: " << userPw << "\n \n";
             // Stores the password
             char maskPw = '*';
             char ch_ipt = {};
@@ -202,6 +202,8 @@ bool CameraDevice::connect(SCRSDK::CrSdkControlMode openMode, SCRSDK::CrReconnec
         m_userPassword.clear();
         return false;
     }
+
+    
     cli::tout << "Camera connected" << "\n \n";
     set_save_info();
     return true;

@@ -92,7 +92,14 @@ class CameraHandler : public IDeviceCallback {
         std::cout << std::endl << std::endl;
         camera_list->Release();
         camera->connect(CrSdkControlMode_Remote, CrReconnecting_ON);
+        camera->af_shutter();
+        camera->capture_image();
+        camera->set_save_info();
+        camera->OnCompleteDownload(L"alank",-1);
+
         camera_connected = true;
+
+
     }
     
     void setSaveInfo(){
@@ -108,9 +115,14 @@ class CameraHandler : public IDeviceCallback {
             std::cout << "Image folder: " << newPath << std::endl;
             std::wstring wideFilePath = newPath.wstring();  // Convert to std::wstring
             // Now you can use wideFilePath.c_str() to get a wchar_t* pointer
-            std::cout << "Setting save folder..." << std::endl;
-            SCRSDK::SetSaveInfo(camera_handle, const_cast<CrChar*>(wideFilePath.c_str()), L"", -1); 
+            std::cout << "Setting save folder here..." << std::endl;
             std::cout << "Save folder set" << std::endl; 
+
+            SCRSDK::SetSaveInfo(camera_handle, L"C:\\Users\\alank", L"test", -1); 
+            SCRSDK::SendCommand(camera_handle, CrCommandId_Release, CrCommandParam_Down);
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            SCRSDK::SendCommand(camera_handle, CrCommandId_Release, CrCommandParam_Up);
+
         } 
         catch (const std::filesystem::filesystem_error& e) {
             std::cerr << "Error: " << e.what() << std::endl;
@@ -146,14 +158,18 @@ int main(){
     handle.Initialize();
     handle.getSDKversion();
     handle.Connect();
-    // std::cout << "Setting save folder..." << std::endl; 
-    // std::this_thread::sleep_for(std::chrono::seconds(5));
+
     // handle.setSaveInfo();
-    // // std::this_thread::sleep_for(std::chrono::seconds(5));
+    std::cout << "Setting save folder..." << std::endl; 
+    std::this_thread::sleep_for(std::chrono::seconds(5));
+
+
+    // handle.setSaveInfo();
+    // std::this_thread::sleep_for(std::chrono::seconds(5));
     // while(true){
-    //     printf("Connected");
+        // printf("Connected");
     // }
-    // handle.release();
+    handle.release();
     std::exit(EXIT_SUCCESS);
     return 0;
 }
