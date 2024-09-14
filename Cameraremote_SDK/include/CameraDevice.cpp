@@ -612,11 +612,11 @@ void CameraDevice::get_zoom_operation()
     // Zoom Speed Range is not supported
     if (m_prop.zoom_speed_range.possible.size() < 2) {
         tout << "Zoom Speed Range     : -1 to 1" << std::endl 
-             << "Zoom Speed Type      : " << format_remocon_zoom_speed_type(m_prop.remocon_zoom_speed_type.current) << std::endl;
+            << "Zoom Speed Type      : " << format_remocon_zoom_speed_type(m_prop.remocon_zoom_speed_type.current) << std::endl;
     }
     else {
         tout << "Zoom Speed Range     : " << (int)m_prop.zoom_speed_range.possible.at(0) << " to " << (int)m_prop.zoom_speed_range.possible.at(1) << std::endl
-             << "Zoom Speed Type      : " << format_remocon_zoom_speed_type(m_prop.remocon_zoom_speed_type.current) << std::endl;
+            << "Zoom Speed Type      : " << format_remocon_zoom_speed_type(m_prop.remocon_zoom_speed_type.current) << std::endl;
     }
 
     // Zoom Bar Information

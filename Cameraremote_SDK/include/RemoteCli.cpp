@@ -92,9 +92,8 @@ int main()
     }
 
     cli::tout << std::endl << "Connect to camera with input number...\n";
-    cli::tout << "input> ";
-    cli::text connectNo;
-    std::getline(cli::tin, connectNo);
+    cli::tout << "input> 1";
+    cli::text connectNo = L"1";
     cli::tout << '\n';
 
     cli::tsmatch smatch;
@@ -131,7 +130,7 @@ int main()
     std::int32_t cameraNumUniq = 1;
     std::int32_t selectCamera = 1;
 
-    cli::tout << "Connect to selected camera...\n";
+    cli::tout << "Connecting to camera...\n";
     auto* camera_info = camera_list->GetCameraObjectInfo(no - 1);
 
     cli::tout << "Create camera SDK camera callback object.\n";
@@ -296,9 +295,8 @@ int main()
                 // << "(f) Release Device \n"
                 << "(x) Exit\n";
 
-            cli::tout << "input> ";
-            cli::text action;
-            std::getline(cli::tin, action);
+            cli::tout << "switching to 1 by default";
+            cli::text action = L"1";
             cli::tout << '\n';
 
             if (action == TEXT("x")) { /* Exit app */
