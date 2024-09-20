@@ -1,253 +1,66 @@
-"""_summary_
-    This is the main code file to run the CameraApp
-"""
 import os
-import time
-import multiprocessing
-import subprocess
-import csv
-import boto3
-from botocore.exceptions import NoCredentialsError, ClientError
+import aiohttp
+import asyncio
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
 
 class CameraAppManager:
-    
-    def __init__(self):
-        self.monitor_process = None
-        
-    def GetPwd(self):
-        """Returns the directory containing current director. Note: Looks from base directory so os.chdir('...') will need to be changed when code moves folders
-
-        Returns:
-            str: path to previous directory in /././. format
-        """
-        os.chdir('...')
-        pwd = os.getcwd()
-        print(f"previous working directory is: {pwd}")
-        return pwd
-
-    def GetCwd(self):
-        """Get path to current directory
-
-        Returns:
-            str: path to current directory in /././. format
-        """
-        cwd = os.getcwd()
-        print("current working directory is: ")
-        print(cwd)
-        exe_rPath = "\out\\build\Visual Studio Build Tools 2022 Release - amd64\Debug\CameraApp.exe"
-        exe_path = cwd + exe_rPath
-        print("Executable working directory is: ")
-        print(exe_path)
-        
-        return exe_path
-        
-    def run_daemon(self, path):
-        """
-        Function to run an executable as a background process and display output.
-        
-        Args:
-            path (str): Path to the executable.
-        """
-        try:
-            # Start the process without redirecting stdout and stderr
-            if os.name == 'nt':
-                # For Windows
-                process = subprocess.Popen(
-                    [path],
-                    creationflags=subprocess.CREATE_NEW_CONSOLE  # Start in a new console on Windows
-                )
-            else:
-                # For Unix-like systems (Linux, macOS)
-                process = subprocess.Popen(
-                    [path],
-                    preexec_fn=os.setpgrp  # Detach the process on Unix-like systems
-                )
-            print(f"Started daemon process with PID: {process.pid}")
-            # Wait for the process to exit
-            process.wait()
-            # Check the exit code to determine why the process exited
-            exit_code = process.returncode
-            if exit_code == 0:
-                print(f"Daemon process with PID {process.pid} exited successfully.")
-            else:
-                print(f"Daemon process with PID {process.pid} exited with error code {exit_code}.")
-        except Exception as e:
-            print(f"Failed to start daemon process: {e}")
-
-    def monitor_daemon(self, executable_path):
-        """
-        Function to monitor and restart the daemon process if it exits.
-        
-        Args:
-            executable_path (str): Path to the executable.
-        """
-        while True:
-            print("Starting the daemon process...")
-            daemon_process = multiprocessing.Process(
-                target=self.run_daemon, 
-                args=(executable_path,)
-            )
-            
-            # Set the process as a daemon
-            daemon_process.daemon = True
-            # Start the process
-            daemon_process.start()
-            
-            # Wait for the process to exit
-            daemon_process.join()
-            print("Daemon process exited. Restarting in 1 seconds...")
-            print('\n')
-            time.sleep(1)  # Delay before restarting the process
-
-    def read_aws_keys_from_csv(self):
-        """
-        Reads AWS credentials from a CSV file named 'Info.csv' located in the same directory as the Python script.
-        
-        Returns:
-            dict: A dictionary with AWS credentials { 'aws_access_key_id': '...', 'aws_secret_access_key': '...' }
-        """
-        # File name assuming it's in the same directory
-        file_name = 'Info.csv'
-        
-        # Construct the path to the file in the same directory
-        file_path = os.path.join(os.path.dirname(__file__), file_name)
-
-        credentials = {}
+    async def send_image_request(self, image_path, name):
+        url = 'https://cbweb.onrender.com/api/images/images/'
+        print(f"Sending file: {image_path}")
 
         try:
-            with open(file_path, mode='r', encoding='utf-8-sig') as file:  # 'utf-8-sig' will handle BOM if present
-                csv_reader = csv.DictReader(file)
-                headers = csv_reader.fieldnames
-                print(f"CSV Headers: {headers}")
+            with open(image_path, 'rb') as image_file:
+                data = aiohttp.FormData()
+                data.add_field('name', name)
+                data.add_field('image', image_file, filename=os.path.basename(image_path), content_type='image/jpeg')
 
-                for row in csv_reader:
-                    print(f"Row data: {row}")
-                    # Use strip to remove any unexpected whitespace
-                    credentials['aws_access_key_id'] = row['Access key ID'].strip()
-                    credentials['aws_secret_access_key'] = row['Secret access key'].strip()
-                    credentials['drone_id'] = row['Drone ID'].strip()
-                    break  # Read only the first row if credentials are stored in a single row
-
-            print("AWS credentials read successfully.")
-            print(f"Credentials: {credentials}")  # Print credentials dictionary
-            return credentials
-
-        except FileNotFoundError:
-            print(f"Error: The file {file_name} was not found in the current directory.")
-        except KeyError as e:
-            print(f"Error: The expected key {e} is not found in the CSV file headers.")
+                async with aiohttp.ClientSession() as session:
+                    async with session.post(url, data=data) as response:
+                        if response.status == 201:
+                            print(f"File {image_path} sent successfully.")
+                            os.remove(image_path)
+                            print(f"File {image_path} deleted.")
+                        elif response.status == 400:  # Assuming 400 is the status for bad requests
+                            error_message = await response.json()
+                            if "image model with this name already exists." in error_message.get("name", []):
+                                print(f"Image with name '{name}' already exists. Deleting {image_path}.")
+                                os.remove(image_path)
+                                print(f"File {image_path} deleted.")
+                            else:
+                                print(f"Failed to send file. Status code: {response.status}, Error message: {error_message}")
+                        else:
+                            error_message = await response.text()
+                            print(f"Failed to send file. Status code: {response.status}, Error message: {error_message}")
         except Exception as e:
-            print(f"An error occurred while reading the AWS credentials: {e}")
+            print(f"Failed to send image: {e}")
 
-    def upload_to_s3(self, LOCAL_FILE, aws_credentials):
-        """Uploads file to AWS S3 bucket
+    async def upload_image(self, image_path):
+        name = f"image_{os.path.basename(image_path)}"
+        await self.send_image_request(image_path, name)
 
-        Args:
-            LOCAL_FILE (str): filepath to image file to be uploaded
-            NAME_FOR_S3 (str): Name of file to be uploaded
-        """
-        global i
-        
-        AWS_S3_BUCKET_NAME = 'mappting'
-        AWS_REGION = 'us-east-1'
-        print('in main method')
+class ImageUploadHandler(FileSystemEventHandler):
+    def __init__(self, app_manager):
+        self.app_manager = app_manager
 
-        s3_client = boto3.client(
-            service_name='s3',
-            region_name=AWS_REGION,
-            aws_access_key_id=aws_credentials['aws_access_key_id'],
-            aws_secret_access_key=aws_credentials['aws_secret_access_key']
-        )
+    def on_created(self, event):
+        if not event.is_directory and event.src_path.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
+            asyncio.run(self.app_manager.upload_image(event.src_path))
 
-        file_name = aws_credentials['drone_id'] + '_' + str(i)
-        response = s3_client.upload_file(LOCAL_FILE, AWS_S3_BUCKET_NAME, file_name)
-
-        if response is None:
-            print(f'upload of {LOCAL_FILE} success')
-        else:
-            print(f'upload_log_to_aws response: {response}')
-
-    def uploadimages(self, folder_path, interval, aws_credentials):
-        """
-        Monitors a folder for new image files, uploads them to AWS S3, and removes them from the folder.
-        
-        Args:
-            folder_path (str): Path to the folder to monitor.
-            interval (int): Time interval (in seconds) to wait between checks.
-        """
-        # Initialize the S3 client
-        global i
-        
-        s3_client = boto3.client('s3')
-
-        image_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff'}
-        previous_files = set(os.listdir(folder_path))
-        print("Monitoring folder for new images...")
-        print('\n')
-
-        # Use the correct key from the credentials dictionary
-        droneid = aws_credentials.get('drone_id', '').strip()  # Get drone_id or default to an empty string
-        if not droneid:
-            print("Error: 'Drone ID' is missing from AWS credentials.")
-            return
-
-        aws_file_name = droneid + '_' + str(i)
-        
+def start_monitoring(directory):
+    app_manager = CameraAppManager()
+    event_handler = ImageUploadHandler(app_manager)
+    observer = Observer()
+    observer.schedule(event_handler, path=directory, recursive=False)
+    observer.start()
+    print(f"Monitoring directory: {directory}")
+    try:
         while True:
-            time.sleep(interval)
-            # Get the current set of files in the folder
-            current_files = set(os.listdir(folder_path))
-            # Determine the new files added to the folder
-            new_files = current_files - previous_files
-            # Filter new files by checking if they have an image extension
-            new_images = [f for f in new_files if os.path.splitext(f)[1].lower() in image_extensions]
-            if new_images:
-                print(f"New image(s) added: {', '.join(new_images)}")
-                for image in new_images:
-                    i = i + 1
-                    image_path = os.path.join(folder_path, image)
-                    # Upload the image to S3
-                    self.upload_to_s3(image_path, aws_credentials)
-                    # Remove the image file from the folder if the upload is successful
-                    os.remove(image_path)
-                    print(f"Removed {image_path} from folder after upload.")
-                # Update the previous file set for the next iteration
-                previous_files.update(new_files)
-
-    def start(self):
-        global i
-        # Store the path in a variable
-        executable_path = self.GetCwd() 
-        # Start monitoring the daemon process
-        monitor_process = multiprocessing.Process(
-            target=self.monitor_daemon,
-            args=(executable_path,)
-        )
-        # Start the monitor process
-        monitor_process.start()
-        print("Daemon monitor started. Now tracking image file uploads...")
-        
-        aws_credentials = self.read_aws_keys_from_csv()
-        
-        # Continue with other code execution  
-        pwd = self.GetPwd() 
-        imageDir = pwd + '\Images'
-        self.uploadimages(imageDir, 1, aws_credentials)
-
-    def stop(self):
-        if self.monitor_process and self.monitor_process.is_alive():
-            self.monitor_process.terminate()
-            self.monitor_process.join()
-        print("Stopped all processes.")
-
-
+            asyncio.sleep(1)  # Keep the main thread alive
+    except KeyboardInterrupt:
+        observer.stop()
+    observer.join()
 
 if __name__ == "__main__":
-    appManager = CameraAppManager()
-    
-    i = 0
-    try:
-        appManager.start()
-    except KeyboardInterrupt:
-        appManager.stop()
-        print("Application aborted by user.")
+    current_directory = os.getcwd()  # Get the current working directory
+    start_monitoring(current_directory+"/build/")

@@ -1,0 +1,7 @@
+/home/cbai-jetson/CameraApp/build/CMakeFiles/install/strip.dir
+/home/cbai-jetson/CameraApp/build/CMakeFiles/install/local.dir
+/home/cbai-jetson/CameraApp/build/CMakeFiles/install.dir
+/home/cbai-jetson/CameraApp/build/CMakeFiles/list_install_components.dir
+/home/cbai-jetson/CameraApp/build/CMakeFiles/rebuild_cache.dir
+/home/cbai-jetson/CameraApp/build/CMakeFiles/edit_cache.dir
+/home/cbai-jetson/CameraApp/build/CMakeFiles/RemoteCli.dir
